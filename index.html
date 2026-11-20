@@ -33,16 +33,20 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
 
+    html, body {
+      min-height: 100%;
+      overflow-y: auto;
+    }
+
     body {
       background-color: var(--bg);
       color: var(--text);
-      padding: 14px 14px 110px;
+      padding: 14px 14px 180px;
       max-width: 480px;
       margin: 0 auto;
       overflow-x: hidden;
     }
 
-    /* Header */
     .header {
       display: flex;
       justify-content: space-between;
@@ -110,7 +114,6 @@
       font-size: 15px;
     }
 
-    /* Date Nav */
     .date-bar {
       display: flex;
       justify-content: space-between;
@@ -125,17 +128,17 @@
       background: none;
       border: none;
       color: var(--emerald);
-      font-size: 16px;
+      font-size: 18px;
       font-weight: bold;
-      padding: 4px 10px;
+      padding: 4px 12px;
       cursor: pointer;
     }
     .date-label {
       font-size: 13px;
       font-weight: 700;
+      cursor: pointer;
     }
 
-    /* Cards */
     .card {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -200,7 +203,6 @@
       margin-bottom: 12px;
     }
 
-    /* Progress Bar */
     .bar-bg {
       height: 8px;
       background: var(--surface-2);
@@ -229,7 +231,6 @@
       color: var(--emerald);
     }
 
-    /* Swipeable Money Deck */
     .deck-wrapper {
       position: relative;
       overflow: hidden;
@@ -238,6 +239,7 @@
       border: 1px solid var(--border);
       background: var(--surface);
       touch-action: pan-y;
+      user-select: none;
     }
     .deck-track {
       display: flex;
@@ -310,7 +312,6 @@
       color: var(--amber);
     }
 
-    /* Quick Taps & Combos */
     .section-head {
       display: flex;
       justify-content: space-between;
@@ -354,7 +355,6 @@
       font-weight: 500;
     }
 
-    /* Tabs */
     .tabs {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -379,22 +379,33 @@
       color: var(--emerald);
     }
 
-    /* Ledger List */
+    /* Ledger row with 1-tap Quick Remove */
     .ledger-item {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 14px;
-      padding: 11px 13px;
+      padding: 10px 10px 10px 13px;
       margin-bottom: 8px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 10px;
+    }
+    .ledger-main {
+      flex: 1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       cursor: pointer;
+      min-width: 0;
     }
     .ledger-title {
       font-size: 13px;
       font-weight: 700;
       margin-bottom: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     .ledger-meta {
       font-size: 11px;
@@ -404,11 +415,201 @@
       text-align: right;
       font-size: 13px;
       font-weight: 700;
+      flex-shrink: 0;
+      margin-left: 8px;
     }
     .val-food { color: var(--emerald); }
     .val-exp { color: var(--blue); }
 
-    /* Bottom Dock */
+    .quick-del-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 9px;
+      background: var(--rose-dim);
+      border: 1px solid rgba(244, 63, 94, 0.3);
+      color: var(--rose);
+      font-size: 12px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .quick-del-btn:active {
+      transform: scale(0.92);
+    }
+
+    /* 84-Day (7x12) GitHub-style Streak Board */
+    .board-switcher {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      padding: 3px;
+      margin-bottom: 12px;
+    }
+    .board-pill {
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 6px 8px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .board-pill.active-nut {
+      background: var(--emerald-dim);
+      color: var(--emerald);
+    }
+    .board-pill.active-wrk {
+      background: var(--blue-dim);
+      color: var(--blue);
+    }
+
+    .streak-grid-84 {
+      display: grid;
+      grid-template-rows: repeat(7, 1fr);
+      grid-auto-flow: column;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 4px;
+      margin-bottom: 10px;
+    }
+    .streak-cell {
+      aspect-ratio: 1;
+      border-radius: 4px;
+      background: var(--surface-2);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      cursor: pointer;
+      transition: transform 0.1s ease;
+    }
+    .streak-cell:active {
+      transform: scale(0.9);
+    }
+    .streak-cell.hit-nut {
+      background: var(--emerald);
+      border-color: rgba(16, 185, 129, 0.6);
+    }
+    .streak-cell.partial-nut {
+      background: var(--amber);
+      border-color: rgba(245, 158, 11, 0.6);
+    }
+    .streak-cell.hit-wrk {
+      background: var(--blue);
+      border-color: rgba(56, 189, 248, 0.6);
+    }
+    .streak-cell.selected {
+      outline: 2px solid var(--text);
+      outline-offset: 1px;
+    }
+
+    .streak-legend {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .legend-items {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .legend-dot {
+      display: inline-block;
+      width: 9px;
+      height: 9px;
+      border-radius: 2px;
+      margin-right: 4px;
+      vertical-align: middle;
+    }
+    .inspect-bar {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 7px 10px;
+      font-size: 11px;
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    /* Weight Log + Sparkline */
+    .weight-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .weight-input {
+      flex: 1;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 9px 11px;
+      border-radius: 10px;
+      font-size: 13px;
+      outline: none;
+    }
+    .weight-save-btn {
+      background: var(--emerald-dim);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: var(--emerald);
+      padding: 9px 14px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .spark-wrap {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px;
+    }
+    .spark-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    /* Wrap-Up Toast Banner */
+    .wrap-toast {
+      position: fixed;
+      top: 14px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-130%);
+      width: calc(100% - 28px);
+      max-width: 452px;
+      background: #11221c;
+      border: 1px solid var(--emerald);
+      border-radius: 16px;
+      padding: 12px 14px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.65);
+      z-index: 80;
+      transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .wrap-toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+    .wrap-toast-title {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--emerald);
+      margin-bottom: 3px;
+    }
+    .wrap-toast-body {
+      font-size: 12px;
+      color: var(--text);
+      line-height: 1.35;
+    }
+
     .bottom-dock {
       position: fixed;
       bottom: 0;
@@ -471,17 +672,21 @@
       cursor: pointer;
     }
 
-    /* Modals */
     .modal-backdrop {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.75);
+      background: rgba(0, 0, 0, 0.8);
       display: none;
       align-items: flex-end;
       justify-content: center;
       z-index: 50;
     }
     .modal-backdrop.open { display: flex; }
+    .modal-backdrop.center-modal {
+      align-items: center;
+      padding: 14px;
+      z-index: 70;
+    }
     .modal-box {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -489,8 +694,11 @@
       width: 100%;
       max-width: 480px;
       padding: 18px;
-      max-height: 88vh;
+      max-height: 90vh;
       overflow-y: auto;
+    }
+    .center-modal .modal-box {
+      border-radius: 22px;
     }
     .modal-title {
       font-size: 16px;
@@ -531,6 +739,11 @@
       cursor: pointer;
       margin-top: 6px;
     }
+    .btn-secondary {
+      background: var(--surface-2);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
     .btn-danger {
       background: var(--rose-dim);
       color: var(--rose);
@@ -541,16 +754,41 @@
       grid-template-columns: 1fr 1fr;
       gap: 8px;
     }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+    }
     .backup-box {
       display: flex;
       flex-direction: column;
       gap: 8px;
     }
+    .calc-preview {
+      background: var(--emerald-dim);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      border-radius: 12px;
+      padding: 10px 12px;
+      margin: 10px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+    }
+    .calc-preview strong {
+      color: var(--emerald);
+      font-size: 15px;
+    }
   </style>
 </head>
 <body>
 
-  <!-- Header -->
+  <!-- End-of-Day Wrap-Up Toast -->
+  <div class="wrap-toast" id="wrapToast">
+    <div class="wrap-toast-title" id="wrapToastTitle">🌙 Day Wrapped Up!</div>
+    <div class="wrap-toast-body" id="wrapToastBody"></div>
+  </div>
+
   <div class="header">
     <div class="brand">
       <div class="logo-badge">₱</div>
@@ -560,19 +798,17 @@
       </div>
     </div>
     <div class="header-actions">
-      <button class="pill-btn" id="dayModeBtn" onclick="toggleDayMode()">School Day</button>
-      <button class="icon-btn" onclick="openModal('settingsModal')">⚙️</button>
+      <button type="button" class="pill-btn" id="dayModeBtn" onclick="toggleDayMode()">School Day</button>
+      <button type="button" class="icon-btn" onclick="openModal('settingsModal')">⚙️</button>
     </div>
   </div>
 
-  <!-- Date Bar -->
   <div class="date-bar">
-    <button onclick="shiftDate(-1)">‹</button>
-    <div class="date-label" id="dateLabel">Today</div>
-    <button onclick="shiftDate(1)">›</button>
+    <button type="button" id="prevDayBtn" onclick="shiftDate(-1)">‹</button>
+    <div class="date-label" id="dateLabel" onclick="jumpToday()">Today</div>
+    <button type="button" id="nextDayBtn" onclick="shiftDate(1)">›</button>
   </div>
 
-  <!-- Safe to Eat Card -->
   <div class="card">
     <div class="card-top">
       <div class="card-tag"><span class="dot green"></span> SAFE TO EAT</div>
@@ -590,11 +826,8 @@
     </div>
   </div>
 
-  <!-- Swipeable Money Deck -->
   <div class="deck-wrapper" id="moneyDeck">
     <div class="deck-track" id="deckTrack">
-      
-      <!-- Slide 1: Safe to Spend -->
       <div class="deck-slide">
         <div class="card-top">
           <div class="card-tag"><span class="dot blue"></span> SAFE TO SPEND</div>
@@ -615,7 +848,6 @@
         </div>
       </div>
 
-      <!-- Slide 2: Total Money -->
       <div class="deck-slide">
         <div class="card-top">
           <div class="card-tag"><span class="dot green"></span> TOTAL MONEY</div>
@@ -635,7 +867,6 @@
         </div>
       </div>
 
-      <!-- Slide 3: Saved / Savings Jar -->
       <div class="deck-slide">
         <div class="card-top">
           <div class="card-tag"><span class="dot amber"></span> SAVINGS JAR</div>
@@ -649,7 +880,6 @@
           <strong style="color:var(--amber); cursor:pointer;" onclick="bankLeftover()">+ Bank Leftover ₱</strong>
         </div>
       </div>
-
     </div>
 
     <div class="deck-footer">
@@ -658,60 +888,157 @@
         <div class="deck-dot" onclick="goSlide(1)"></div>
         <div class="deck-dot" onclick="goSlide(2)"></div>
       </div>
-      <div style="display:flex; gap:6px;">
-        <button class="mini-action amber" onclick="bankLeftover()">Bank Leftover ₱</button>
-        <button class="mini-action" onclick="nextSlide()">Swipe ›</button>
-      </div>
+      <button type="button" class="mini-action amber" onclick="bankLeftover()">Bank Leftover ₱</button>
     </div>
   </div>
 
-  <!-- Combo Meals & Quick Staples -->
   <div class="section-head">
     <span>1-Tap Combos & Staples</span>
     <span style="color:var(--emerald); cursor:pointer;" onclick="openModal('manualModal')">+ Custom</span>
   </div>
   <div class="chips-scroll" id="presetsRow"></div>
 
-  <!-- Tabs -->
   <div class="tabs">
-    <button class="tab-btn active" id="tabLedgerBtn" onclick="switchTab('ledger')">Today's Ledger</button>
-    <button class="tab-btn" id="tabBackupBtn" onclick="switchTab('backup')">Habits & Backup</button>
+    <button type="button" class="tab-btn active" id="tabLedgerBtn" onclick="switchTab('ledger')">Today's Ledger</button>
+    <button type="button" class="tab-btn" id="tabBackupBtn" onclick="switchTab('backup')">Habits & Backup</button>
   </div>
 
-  <!-- Ledger View -->
   <div id="ledgerView"></div>
 
-  <!-- Habits & Backup View -->
   <div id="backupView" style="display:none;">
+    <!-- 84-Day (12-Week) Consistency Streak Board with Nutrition / Workout Switcher -->
+    <div class="card">
+      <div class="section-head">
+        <span>84-Day Streak Board</span>
+        <span style="color:var(--amber);" id="boardStreakTag">🔥 0d streak</span>
+      </div>
+      <div class="board-switcher">
+        <button type="button" class="board-pill active-nut" id="boardNutBtn" onclick="setStreakBoardMode('nutrition')">🥗 Nutrition</button>
+        <button type="button" class="board-pill" id="boardWrkBtn" onclick="setStreakBoardMode('workout')">💪 Home Workout</button>
+      </div>
+      <div class="streak-grid-84" id="streakGrid84"></div>
+      <div class="streak-legend" id="streakLegend"></div>
+      <div class="inspect-bar" id="streakInspectBar">Tap any box to inspect that day's progress.</div>
+    </div>
+
+    <!-- Daily Habits -->
     <div class="card">
       <div class="section-head"><span>Daily Habits</span></div>
       <div style="display:flex; flex-direction:column; gap:8px;" id="habitsList"></div>
     </div>
+
+    <!-- Weight Log + Mini Trend Line -->
+    <div class="card">
+      <div class="section-head">
+        <span>Weight Log & Trend</span>
+        <span id="latestWeightTag" style="color:var(--emerald);">-- kg</span>
+      </div>
+      <div class="weight-row">
+        <input type="number" step="0.1" class="weight-input" id="weightInput" placeholder="Log weight for selected day (kg)" />
+        <button type="button" class="weight-save-btn" onclick="logWeight()">Save kg</button>
+      </div>
+      <div class="spark-wrap" id="weightSparkWrap">
+        <div class="spark-meta">
+          <span id="weightRangeLabel">No weight logs yet</span>
+          <span id="weightDeltaLabel"></span>
+        </div>
+        <svg id="weightSparkSvg" width="100%" height="56" viewBox="0 0 300 56" preserveAspectRatio="none"></svg>
+      </div>
+    </div>
+
+    <!-- Data & Migration -->
     <div class="card backup-box">
-      <div class="section-head"><span>Data & Migration (Cashtra Fit → FITSAVE)</span></div>
+      <div class="section-head"><span>Data & Migration (Local Offline Storage)</span></div>
       <div style="font-size:12px; color:var(--muted);" id="storageStats">0 entries stored locally.</div>
-      <button class="btn-full" onclick="exportJSON()">Export FITSAVE Backup (.json)</button>
-      <button class="btn-full" style="background:var(--surface-2); color:var(--text); border:1px solid var(--border);" onclick="exportCSV()">Export Spreadsheet (.csv)</button>
+      <button type="button" class="btn-full" onclick="exportJSON()">Export FITSAVE Backup (.json)</button>
+      <button type="button" class="btn-full btn-secondary" onclick="exportCSV()">Export Spreadsheet (.csv)</button>
       <label class="btn-full" style="background:var(--blue-dim); color:var(--blue); border:1px solid rgba(56,189,248,0.35); text-align:center;">
-        Import JSON (Cashtra Fit or FITSAVE)
+        Import JSON Backup
         <input type="file" accept=".json" style="display:none;" onchange="importJSON(event)" />
       </label>
     </div>
   </div>
 
-  <!-- Bottom Smart Dock -->
   <div class="bottom-dock">
     <div class="smart-pill" id="smartPill" onclick="applySmartSuggestion()">
       💡 Checking remaining calories & allowance...
     </div>
     <div class="input-row">
-      <button class="manual-trigger" onclick="openModal('manualModal')">+</button>
+      <button type="button" class="manual-trigger" onclick="openModal('manualModal')">+</button>
       <input class="chat-input" id="smartInput" placeholder="e.g. '2 eggs, 1 rice' or '₱45 trike maya'" onkeydown="if(event.key==='Enter') handleSmartLog()" />
-      <button class="log-btn" onclick="handleSmartLog()">Log</button>
+      <button type="button" class="log-btn" onclick="handleSmartLog()">Log</button>
     </div>
   </div>
 
-  <!-- Manual Add Modal -->
+  <!-- First-Time Startup Setup Modal -->
+  <div class="modal-backdrop center-modal" id="onboardingModal">
+    <div class="modal-box">
+      <div class="modal-title">
+        <span>👋 Welcome to FITSAVE</span>
+        <span style="font-size:11px; color:var(--emerald); font-weight:700;">Quick Setup</span>
+      </div>
+      <div style="font-size:12px; color:var(--muted); margin-bottom:12px; line-height:1.4;">
+        Enter your stats to calculate your daily calorie & protein targets, or skip with defaults.
+      </div>
+      <div class="grid-2">
+        <div class="field">
+          <label>Sex</label>
+          <select id="obSex" onchange="previewOnboardingCalc()">
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Age (yrs)</label>
+          <input id="obAge" type="number" value="20" oninput="previewOnboardingCalc()" />
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="field">
+          <label>Height (cm)</label>
+          <input id="obHeight" type="number" value="170" oninput="previewOnboardingCalc()" />
+        </div>
+        <div class="field">
+          <label>Weight (kg)</label>
+          <input id="obWeight" type="number" step="0.1" value="68" oninput="previewOnboardingCalc()" />
+        </div>
+      </div>
+      <div class="field">
+        <label>Fitness Goal</label>
+        <select id="obGoal" onchange="previewOnboardingCalc()">
+          <option value="recomp" selected>Lean Recomp (Build muscle + stay lean)</option>
+          <option value="cut">Lose Fat / Cut</option>
+          <option value="bulk">Gain Muscle / Lean Bulk</option>
+        </select>
+      </div>
+      <div class="calc-preview">
+        <span>Suggested Daily Target:</span>
+        <strong id="obCalcResult">1,950 kcal • 136g P</strong>
+      </div>
+      <div class="grid-3">
+        <div class="field">
+          <label>Daily ₱ Limit</label>
+          <input id="obAllowance" type="number" value="300" />
+        </div>
+        <div class="field">
+          <label>Cash (₱)</label>
+          <input id="obCash" type="number" value="1000" />
+        </div>
+        <div class="field">
+          <label>Maya (₱)</label>
+          <input id="obMaya" type="number" value="1500" />
+        </div>
+      </div>
+      <button type="button" class="btn-full" onclick="applyOnboardingSetup()">Start FITSAVE with These Targets</button>
+      <button type="button" class="btn-full btn-secondary" onclick="skipOnboardingDefaults()">Skip — Use Default Targets (1,950 kcal • 130g P)</button>
+      <label class="btn-full" style="background:var(--blue-dim); color:var(--blue); border:1px solid rgba(56,189,248,0.35); text-align:center; display:block;">
+        Already have a backup? Import JSON
+        <input type="file" accept=".json" style="display:none;" onchange="importJSON(event, true)" />
+      </label>
+    </div>
+  </div>
+
+  <!-- Manual Entry Modal -->
   <div class="modal-backdrop" id="manualModal" onclick="if(event.target===this) closeModal('manualModal')">
     <div class="modal-box">
       <div class="modal-title">
@@ -757,7 +1084,7 @@
         <input type="checkbox" id="manSavePreset" style="width:auto;" />
         <label for="manSavePreset" style="margin:0;">Save as 1-tap Quick-Tap button</label>
       </div>
-      <button class="btn-full" onclick="saveManualEntry()">Save Entry</button>
+      <button type="button" class="btn-full" onclick="saveManualEntry()">Save Entry</button>
     </div>
   </div>
 
@@ -787,8 +1114,8 @@
           </select>
         </div>
       </div>
-      <button class="btn-full" onclick="commitEdit()">Update Entry</button>
-      <button class="btn-full btn-danger" onclick="deleteEntry()">Delete Entry</button>
+      <button type="button" class="btn-full" onclick="commitEdit()">Update Entry</button>
+      <button type="button" class="btn-full btn-danger" onclick="deleteEntry()">Delete Entry</button>
     </div>
   </div>
 
@@ -805,10 +1132,10 @@
         <input id="walletAmountInput" type="number" />
       </div>
       <div class="grid-2" style="margin-bottom:8px;">
-        <button class="pill-btn" onclick="adjustWalletModal(100)">+ ₱100</button>
-        <button class="pill-btn" onclick="adjustWalletModal(500)">+ ₱500</button>
+        <button type="button" class="pill-btn" onclick="adjustWalletModal(100)">+ ₱100</button>
+        <button type="button" class="pill-btn" onclick="adjustWalletModal(500)">+ ₱500</button>
       </div>
-      <button class="btn-full" onclick="saveWalletModal()">Save Balance</button>
+      <button type="button" class="btn-full" onclick="saveWalletModal()">Save Balance</button>
     </div>
   </div>
 
@@ -824,7 +1151,7 @@
         <div class="field"><label>Target Amount (₱)</label><input id="goalTargetInput" type="number" /></div>
         <div class="field"><label>Current Saved Jar (₱)</label><input id="jarBalanceInput" type="number" /></div>
       </div>
-      <button class="btn-full" onclick="saveGoalModal()">Save Goal</button>
+      <button type="button" class="btn-full" onclick="saveGoalModal()">Save Goal</button>
     </div>
   </div>
 
@@ -843,7 +1170,8 @@
         <div class="field"><label>Daily Allowance (₱)</label><input id="setAllowance" type="number" /></div>
         <div class="field"><label>School Day Bonus (kcal)</label><input id="setSchoolBonus" type="number" /></div>
       </div>
-      <button class="btn-full" onclick="saveSettings()">Save Targets</button>
+      <button type="button" class="btn-full" onclick="saveSettings()">Save Targets</button>
+      <button type="button" class="btn-full btn-secondary" onclick="reopenOnboardingCalculator()">Recalculate Targets (Body Stats Wizard)</button>
     </div>
   </div>
 
@@ -851,12 +1179,20 @@
     const STORAGE_KEY = 'fitsave_state_v1';
 
     const DEFAULT_STATE = {
+      onboarded: false,
+      profile: {
+        sex: 'male',
+        age: 20,
+        heightCm: 170,
+        weightKg: 68,
+        goalType: 'recomp'
+      },
       settings: {
         kcalTarget: 1950,
         proteinTarget: 130,
         dailyAllowance: 300,
         schoolBonusKcal: 150,
-        dayMode: 'school', // 'school' | 'rest'
+        dayMode: 'school',
         rollingKcal: false,
         rollingSpend: false
       },
@@ -878,18 +1214,53 @@
         { id: 'p6', name: 'Trike Fare', type: 'expense', kcal: 0, protein: 0, cost: 20, wallet: 'cash' }
       ],
       entries: [],
-      habits: {}
+      habits: {},
+      weights: {}
     };
 
+    function formatLocalDate(dateObj) {
+      const y = dateObj.getFullYear();
+      const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+      const d = String(dateObj.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    }
+
+    function parseLocalDate(dateStr) {
+      const [y, m, d] = dateStr.split('-').map(Number);
+      return new Date(y, m - 1, d);
+    }
+
+    function getRealTodayStr() {
+      return formatLocalDate(new Date());
+    }
+
     let state = loadState();
-    let currentDateStr = getTodayStr();
+    let realTodayStr = getRealTodayStr();
+    let currentDateStr = realTodayStr;
     let currentSlide = 0;
     let smartSuggestionItem = null;
+    let streakBoardMode = 'nutrition';
+    let selectedBoardDate = realTodayStr;
+    let toastTimer = null;
 
-    function getTodayStr() {
-      const d = new Date();
-      return d.toISOString().split('T')[0];
+    function syncRealDateIfChanged() {
+      const latestRealToday = getRealTodayStr();
+      if (latestRealToday !== realTodayStr) {
+        if (currentDateStr === realTodayStr) {
+          currentDateStr = latestRealToday;
+        }
+        if (selectedBoardDate === realTodayStr) {
+          selectedBoardDate = latestRealToday;
+        }
+        realTodayStr = latestRealToday;
+        renderAll();
+      }
     }
+
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) syncRealDateIfChanged();
+    });
+    setInterval(syncRealDateIfChanged, 60000);
 
     function loadState() {
       try {
@@ -899,9 +1270,13 @@
           return {
             ...DEFAULT_STATE,
             ...parsed,
+            onboarded: parsed.onboarded !== undefined ? parsed.onboarded : true,
+            profile: { ...DEFAULT_STATE.profile, ...(parsed.profile || {}) },
             settings: { ...DEFAULT_STATE.settings, ...(parsed.settings || {}) },
             wallets: { ...DEFAULT_STATE.wallets, ...(parsed.wallets || {}) },
-            goal: { ...DEFAULT_STATE.goal, ...(parsed.goal || {}) }
+            goal: { ...DEFAULT_STATE.goal, ...(parsed.goal || {}) },
+            habits: parsed.habits || {},
+            weights: parsed.weights || {}
           };
         }
       } catch (e) {}
@@ -914,14 +1289,20 @@
     }
 
     function shiftDate(days) {
-      const d = new Date(currentDateStr + 'T00:00:00');
-      d.setDate(d.getDate() + days);
-      currentDateStr = d.toISOString().split('T')[0];
+      const base = parseLocalDate(currentDateStr);
+      const next = new Date(base.getFullYear(), base.getMonth(), base.getDate() + days);
+      currentDateStr = formatLocalDate(next);
+      renderAll();
+    }
+
+    function jumpToday() {
+      realTodayStr = getRealTodayStr();
+      currentDateStr = realTodayStr;
       renderAll();
     }
 
     function formatDateLabel(dateStr) {
-      const today = getTodayStr();
+      const today = getRealTodayStr();
       if (dateStr === today) return 'Today • ' + dateStr;
       return dateStr;
     }
@@ -945,24 +1326,41 @@
       return state.settings.kcalTarget + (state.settings.dayMode === 'school' ? state.settings.schoolBonusKcal : 0);
     }
 
-    function computeStreak() {
+    function computeNutritionStreak() {
       let streak = 0;
-      const d = new Date(getTodayStr() + 'T00:00:00');
-      for (let i = 0; i < 60; i++) {
-        const ds = d.toISOString().split('T')[0];
+      const base = parseLocalDate(getRealTodayStr());
+      const target = getEffectiveKcalTarget();
+      for (let i = 0; i < 84; i++) {
+        const d = new Date(base.getFullYear(), base.getMonth(), base.getDate() - i);
+        const ds = formatLocalDate(d);
         const dayEntries = state.entries.filter(e => e.date === ds);
         if (dayEntries.length === 0) {
-          if (i === 0) { d.setDate(d.getDate() - 1); continue; }
+          if (i === 0) continue;
           break;
         }
         const kcal = dayEntries.reduce((s, e) => s + (e.kcal || 0), 0);
         const prot = dayEntries.reduce((s, e) => s + (e.protein || 0), 0);
-        if (kcal <= getEffectiveKcalTarget() && prot >= state.settings.proteinTarget) {
+        if (kcal <= target && prot >= state.settings.proteinTarget) {
           streak++;
         } else if (i > 0) {
           break;
         }
-        d.setDate(d.getDate() - 1);
+      }
+      return streak;
+    }
+
+    function computeWorkoutStreak() {
+      let streak = 0;
+      const base = parseLocalDate(getRealTodayStr());
+      for (let i = 0; i < 84; i++) {
+        const d = new Date(base.getFullYear(), base.getMonth(), base.getDate() - i);
+        const ds = formatLocalDate(d);
+        const didWorkout = Boolean(state.habits[ds] && state.habits[ds]['Home Workout']);
+        if (didWorkout) {
+          streak++;
+        } else if (i > 0) {
+          break;
+        }
       }
       return streak;
     }
@@ -973,6 +1371,13 @@
       dayBtn.textContent = state.settings.dayMode === 'school' ? 'School Day' : 'Rest Day';
       dayBtn.classList.toggle('active-mode', state.settings.dayMode === 'school');
 
+      const goalLabels = {
+        recomp: 'Lean Recomp & Daily Budget',
+        cut: 'Fat Loss Cut & Daily Budget',
+        bulk: 'Lean Muscle Gain & Daily Budget'
+      };
+      document.getElementById('goalHeaderSub').textContent = goalLabels[state.profile.goalType] || 'Lean Recomp & Daily Budget';
+
       const dayEntries = state.entries.filter(e => e.date === currentDateStr);
       const eatenKcal = dayEntries.reduce((s, e) => s + (e.kcal || 0), 0);
       const eatenProt = dayEntries.reduce((s, e) => s + (e.protein || 0), 0);
@@ -982,12 +1387,13 @@
       const leftKcal = targetKcal - eatenKcal;
       const leftProt = Math.max(0, state.settings.proteinTarget - eatenProt);
 
+      const nutStreak = computeNutritionStreak();
       document.getElementById('kcalModeBadge').textContent = `Target: ${targetKcal.toLocaleString()}`;
-      document.getElementById('streakBadge').textContent = `🔥 ${computeStreak()}d streak`;
+      document.getElementById('streakBadge').textContent = `🔥 ${nutStreak}d streak`;
       document.getElementById('kcalLeftNum').innerHTML = `${leftKcal.toLocaleString()} <span>kcal left</span>`;
       document.getElementById('kcalSubText').textContent = `Eaten: ${eatenKcal.toLocaleString()} kcal • Target: ${targetKcal.toLocaleString()} kcal`;
 
-      const kcalPct = Math.min(100, Math.round((eatenKcal / targetKcal) * 100));
+      const kcalPct = Math.min(100, Math.round((eatenKcal / Math.max(1, targetKcal)) * 100));
       const kcalBar = document.getElementById('kcalBar');
       kcalBar.style.width = kcalPct + '%';
       kcalBar.className = 'bar-fill ' + (leftKcal < 0 ? 'rose' : 'green');
@@ -995,14 +1401,13 @@
       document.getElementById('proteinTargetLabel').textContent = `${state.settings.proteinTarget}g`;
       document.getElementById('proteinLeftLabel').textContent = leftProt > 0 ? `${leftProt}g left` : `${eatenProt}g hit!`;
 
-      // Money Deck
       const allowance = state.settings.dailyAllowance;
       const leftSpend = allowance - spentPhp;
       document.getElementById('spendModeBadge').textContent = `Daily: ₱${allowance}`;
       document.getElementById('spendLeftNum').innerHTML = `₱${leftSpend.toLocaleString()} <span>left today</span>`;
       document.getElementById('spendSubText').textContent = `Spent: ₱${spentPhp.toLocaleString()} • Daily Allowance: ₱${allowance}`;
 
-      const spendPct = Math.min(100, Math.round((spentPhp / allowance) * 100));
+      const spendPct = Math.min(100, Math.round((spentPhp / Math.max(1, allowance)) * 100));
       const spendBar = document.getElementById('spendBar');
       spendBar.style.width = spendPct + '%';
       spendBar.className = 'bar-fill ' + (leftSpend < 0 ? 'rose' : 'blue');
@@ -1022,7 +1427,9 @@
 
       renderPresets();
       renderLedger(dayEntries);
+      renderStreakBoard84();
       renderHabits();
+      renderWeightSection();
       updateSmartPill(leftKcal, leftProt, leftSpend);
       document.getElementById('storageStats').textContent = `${state.entries.length} total entries stored offline.`;
     }
@@ -1072,6 +1479,18 @@
       saveState();
     }
 
+    function quickRemoveEntry(id, evt) {
+      if (evt) evt.stopPropagation();
+      const idx = state.entries.findIndex(x => x.id === id);
+      if (idx === -1) return;
+      const e = state.entries[idx];
+      if (e.cost > 0) {
+        state.wallets[e.wallet] = (state.wallets[e.wallet] || 0) + e.cost;
+      }
+      state.entries.splice(idx, 1);
+      saveState();
+    }
+
     function renderLedger(dayEntries) {
       const box = document.getElementById('ledgerView');
       if (dayEntries.length === 0) {
@@ -1086,14 +1505,167 @@
         const rightText = e.cost > 0
           ? `<div class="val-exp">-₱${e.cost}</div>${e.kcal > 0 ? `<div class="ledger-meta">${e.kcal} kcal</div>` : ''}`
           : `<div class="val-food">+${e.kcal} kcal</div><div class="ledger-meta">${e.protein}g P</div>`;
-        return `<div class="ledger-item" onclick="openEditModal('${e.id}')">
-          <div>
-            <div class="ledger-title">${e.name}</div>
-            <div class="ledger-meta">${metaParts.join(' • ') || 'Logged item'}</div>
+        return `<div class="ledger-item">
+          <div class="ledger-main" onclick="openEditModal('${e.id}')">
+            <div style="min-width:0;">
+              <div class="ledger-title">${e.name}</div>
+              <div class="ledger-meta">${metaParts.join(' • ') || 'Logged item'}</div>
+            </div>
+            <div class="ledger-val">${rightText}</div>
           </div>
-          <div class="ledger-val">${rightText}</div>
+          <button type="button" class="quick-del-btn" title="Remove entry" onclick="quickRemoveEntry('${e.id}', event)">✕</button>
         </div>`;
       }).join('');
+    }
+
+    /* 84-Day (7x12) Streak Board with Nutrition / Home Workout Toggle */
+    function setStreakBoardMode(mode) {
+      streakBoardMode = mode;
+      renderStreakBoard84();
+    }
+
+    function inspectBoardDay(dateStr) {
+      selectedBoardDate = dateStr;
+      renderStreakBoard84();
+    }
+
+    function renderStreakBoard84() {
+      const nutBtn = document.getElementById('boardNutBtn');
+      const wrkBtn = document.getElementById('boardWrkBtn');
+      nutBtn.className = 'board-pill' + (streakBoardMode === 'nutrition' ? ' active-nut' : '');
+      wrkBtn.className = 'board-pill' + (streakBoardMode === 'workout' ? ' active-wrk' : '');
+
+      const streakTag = document.getElementById('boardStreakTag');
+      if (streakBoardMode === 'nutrition') {
+        streakTag.style.color = 'var(--amber)';
+        streakTag.textContent = `🔥 ${computeNutritionStreak()}d streak`;
+      } else {
+        streakTag.style.color = 'var(--blue)';
+        streakTag.textContent = `💪 ${computeWorkoutStreak()}d streak`;
+      }
+
+      const grid = document.getElementById('streakGrid84');
+      const base = parseLocalDate(getRealTodayStr());
+      const targetKcal = getEffectiveKcalTarget();
+      const cells = [];
+
+      for (let offset = 83; offset >= 0; offset--) {
+        const d = new Date(base.getFullYear(), base.getMonth(), base.getDate() - offset);
+        const ds = formatLocalDate(d);
+        const dayEntries = state.entries.filter(e => e.date === ds);
+        const kcal = dayEntries.reduce((s, e) => s + (e.kcal || 0), 0);
+        const prot = dayEntries.reduce((s, e) => s + (e.protein || 0), 0);
+        const didWorkout = Boolean(state.habits[ds] && state.habits[ds]['Home Workout']);
+
+        let stateClass = '';
+        if (streakBoardMode === 'nutrition') {
+          if (dayEntries.length > 0 && kcal <= targetKcal && prot >= state.settings.proteinTarget) {
+            stateClass = 'hit-nut';
+          } else if (dayEntries.length > 0 && (prot >= state.settings.proteinTarget * 0.7 || kcal > 0)) {
+            stateClass = 'partial-nut';
+          }
+        } else {
+          if (didWorkout) stateClass = 'hit-wrk';
+        }
+
+        const selClass = ds === selectedBoardDate ? ' selected' : '';
+        cells.push(`<div class="streak-cell ${stateClass}${selClass}" title="${ds}" onclick="inspectBoardDay('${ds}')"></div>`);
+      }
+      grid.innerHTML = cells.join('');
+
+      const legend = document.getElementById('streakLegend');
+      if (streakBoardMode === 'nutrition') {
+        legend.innerHTML = `
+          <span>Last 84 days</span>
+          <div class="legend-items">
+            <span><i class="legend-dot" style="background:var(--emerald)"></i>Full Hit</span>
+            <span><i class="legend-dot" style="background:var(--amber)"></i>Partial</span>
+            <span><i class="legend-dot" style="background:var(--surface-2)"></i>None</span>
+          </div>`;
+      } else {
+        legend.innerHTML = `
+          <span>Last 84 days</span>
+          <div class="legend-items">
+            <span><i class="legend-dot" style="background:var(--blue)"></i>Workout Done</span>
+            <span><i class="legend-dot" style="background:var(--surface-2)"></i>Rest / Unlogged</span>
+          </div>`;
+      }
+
+      const selEntries = state.entries.filter(e => e.date === selectedBoardDate);
+      const selKcal = selEntries.reduce((s, e) => s + (e.kcal || 0), 0);
+      const selProt = selEntries.reduce((s, e) => s + (e.protein || 0), 0);
+      const selSpent = selEntries.reduce((s, e) => s + (e.cost || 0), 0);
+      const selWorkout = Boolean(state.habits[selectedBoardDate] && state.habits[selectedBoardDate]['Home Workout']);
+
+      document.getElementById('streakInspectBar').textContent =
+        `${selectedBoardDate}: ${selKcal.toLocaleString()} kcal • ${selProt}g P • ₱${selSpent} • Workout: ${selWorkout ? '✅ Done' : '—'}`;
+    }
+
+    /* Weight Log & SVG Sparkline */
+    function logWeight() {
+      const inp = document.getElementById('weightInput');
+      const val = parseFloat(inp.value);
+      if (!val || val < 25 || val > 300) return;
+      state.weights[currentDateStr] = Number(val.toFixed(1));
+      state.profile.weightKg = Number(val.toFixed(1));
+      inp.value = '';
+      saveState();
+    }
+
+    function renderWeightSection() {
+      const dates = Object.keys(state.weights).sort();
+      const latestTag = document.getElementById('latestWeightTag');
+      const rangeLbl = document.getElementById('weightRangeLabel');
+      const deltaLbl = document.getElementById('weightDeltaLabel');
+      const svg = document.getElementById('weightSparkSvg');
+
+      if (dates.length === 0) {
+        latestTag.textContent = `${state.profile.weightKg || '--'} kg`;
+        rangeLbl.textContent = 'Log your weight to see trend';
+        deltaLbl.textContent = '';
+        svg.innerHTML = `<text x="150" y="32" text-anchor="middle" fill="#8aa399" font-size="11">No weight entries logged yet</text>`;
+        return;
+      }
+
+      const recentDates = dates.slice(-14);
+      const vals = recentDates.map(d => state.weights[d]);
+      const firstVal = vals[0];
+      const lastVal = vals[vals.length - 1];
+      const diff = Number((lastVal - firstVal).toFixed(1));
+
+      latestTag.textContent = `${lastVal} kg`;
+      rangeLbl.textContent = `${recentDates[0]} → ${recentDates[recentDates.length - 1]}`;
+      deltaLbl.textContent = diff === 0 ? '0.0 kg' : `${diff > 0 ? '+' : ''}${diff} kg`;
+      deltaLbl.style.color = diff <= 0 ? 'var(--emerald)' : 'var(--amber)';
+
+      if (vals.length === 1) {
+        svg.innerHTML = `
+          <line x1="20" y1="28" x2="280" y2="28" stroke="#23322d" stroke-width="2" stroke-dasharray="4 4" />
+          <circle cx="150" cy="28" r="5" fill="#10b981" />
+          <text x="150" y="16" text-anchor="middle" fill="#ecfdf5" font-size="11" font-weight="700">${lastVal} kg</text>
+        `;
+        return;
+      }
+
+      const minV = Math.min(...vals) - 0.5;
+      const maxV = Math.max(...vals) + 0.5;
+      const span = Math.max(0.5, maxV - minV);
+
+      const pts = vals.map((v, i) => {
+        const x = 14 + (i / (vals.length - 1)) * 272;
+        const y = 46 - ((v - minV) / span) * 34;
+        return `${x.toFixed(1)},${y.toFixed(1)}`;
+      });
+
+      const lastPt = pts[pts.length - 1].split(',');
+      svg.innerHTML = `
+        <polyline fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" points="${pts.join(' ')}" />
+        ${pts.map(p => {
+          const [cx, cy] = p.split(',');
+          return `<circle cx="${cx}" cy="${cy}" r="3" fill="#10b981" />`;
+        }).join('')}
+        <circle cx="${lastPt[0]}" cy="${lastPt[1]}" r="4.5" fill="#ecfdf5" stroke="#10b981" stroke-width="2" />
+      `;
     }
 
     function updateSmartPill(leftKcal, leftProt, leftSpend) {
@@ -1151,34 +1723,56 @@
       input.value = '';
     }
 
-    /* Swipe Deck Controls */
     function goSlide(idx) {
       currentSlide = Math.max(0, Math.min(2, idx));
       document.getElementById('deckTrack').style.transform = `translateX(-${currentSlide * 33.3333}%)`;
       document.querySelectorAll('.deck-dot').forEach((d, i) => d.classList.toggle('active', i === currentSlide));
     }
-    function nextSlide() {
-      goSlide((currentSlide + 1) % 3);
-    }
-    let touchStartX = 0;
+
+    let startX = 0;
+    let isDragging = false;
     const deckEl = document.getElementById('moneyDeck');
-    deckEl.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+    deckEl.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, { passive: true });
     deckEl.addEventListener('touchend', e => {
-      const diff = e.changedTouches[0].clientX - touchStartX;
+      const diff = e.changedTouches[0].clientX - startX;
       if (Math.abs(diff) > 40) goSlide(currentSlide + (diff < 0 ? 1 : -1));
     });
+    deckEl.addEventListener('mousedown', e => { isDragging = true; startX = e.clientX; });
+    window.addEventListener('mouseup', e => {
+      if (!isDragging) return;
+      isDragging = false;
+      const diff = e.clientX - startX;
+      if (Math.abs(diff) > 40) goSlide(currentSlide + (diff < 0 ? 1 : -1));
+    });
+
+    function showWrapToast(title, body) {
+      const toast = document.getElementById('wrapToast');
+      document.getElementById('wrapToastTitle').textContent = title;
+      document.getElementById('wrapToastBody').textContent = body;
+      toast.classList.add('show');
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove('show'), 3600);
+    }
 
     function bankLeftover() {
       const dayEntries = state.entries.filter(e => e.date === currentDateStr);
       const spent = dayEntries.reduce((s, e) => s + (e.cost || 0), 0);
+      const eatenKcal = dayEntries.reduce((s, e) => s + (e.kcal || 0), 0);
+      const eatenProt = dayEntries.reduce((s, e) => s + (e.protein || 0), 0);
       const leftover = state.settings.dailyAllowance - spent;
+
       if (leftover <= 0) {
-        alert('No unspent daily allowance left to bank today!');
+        showWrapToast('⚠️ No Leftover Allowance', `Spent ₱${spent} of ₱${state.settings.dailyAllowance} today • ${eatenKcal.toLocaleString()} kcal • ${eatenProt}g P`);
         return;
       }
+
       state.wallets.jar += leftover;
       addEntry({ name: 'Banked to Savings Jar', type: 'expense', cost: leftover, wallet: 'cash' });
       goSlide(2);
+      showWrapToast(
+        `🌙 Saved ₱${leftover.toLocaleString()} to ${state.goal.name}!`,
+        `Jar Total: ₱${state.wallets.jar.toLocaleString()} • Today: ${eatenKcal.toLocaleString()} kcal & ${eatenProt}g protein`
+      );
     }
 
     function quickTopUp(wallet, amt) {
@@ -1186,7 +1780,6 @@
       saveState();
     }
 
-    /* Habits */
     function renderHabits() {
       const habits = ['Walk / Commute', 'Home Workout', '2L+ Water'];
       const dayH = state.habits[currentDateStr] || {};
@@ -1203,12 +1796,83 @@
       saveState();
     }
 
-    /* Tabs & Modals */
     function switchTab(tab) {
       document.getElementById('ledgerView').style.display = tab === 'ledger' ? 'block' : 'none';
       document.getElementById('backupView').style.display = tab === 'backup' ? 'block' : 'none';
       document.getElementById('tabLedgerBtn').classList.toggle('active', tab === 'ledger');
       document.getElementById('tabBackupBtn').classList.toggle('active', tab === 'backup');
+    }
+
+    /* First-Time Onboarding & Goal Calculator */
+    function computeTargetsFromStats(sex, age, heightCm, weightKg, goalType) {
+      const bmr = (10 * weightKg) + (6.25 * heightCm) - (5 * age) + (sex === 'male' ? 5 : -161);
+      const tdee = bmr * 1.375;
+      let kcal = Math.round(tdee);
+      let proteinMult = 1.9;
+
+      if (goalType === 'cut') {
+        kcal = Math.max(1350, Math.round((tdee - 420) / 10) * 10);
+        proteinMult = 2.0;
+      } else if (goalType === 'bulk') {
+        kcal = Math.round((tdee + 260) / 10) * 10;
+        proteinMult = 1.8;
+      } else {
+        kcal = Math.max(1500, Math.round((tdee - 150) / 10) * 10);
+        proteinMult = 1.9;
+      }
+      const protein = Math.round(weightKg * proteinMult);
+      return { kcal, protein };
+    }
+
+    function previewOnboardingCalc() {
+      const sex = document.getElementById('obSex').value;
+      const age = Number(document.getElementById('obAge').value) || 20;
+      const heightCm = Number(document.getElementById('obHeight').value) || 170;
+      const weightKg = Number(document.getElementById('obWeight').value) || 68;
+      const goalType = document.getElementById('obGoal').value;
+      const res = computeTargetsFromStats(sex, age, heightCm, weightKg, goalType);
+      document.getElementById('obCalcResult').textContent = `${res.kcal.toLocaleString()} kcal • ${res.protein}g P`;
+    }
+
+    function applyOnboardingSetup() {
+      const sex = document.getElementById('obSex').value;
+      const age = Number(document.getElementById('obAge').value) || 20;
+      const heightCm = Number(document.getElementById('obHeight').value) || 170;
+      const weightKg = Number(document.getElementById('obWeight').value) || 68;
+      const goalType = document.getElementById('obGoal').value;
+      const res = computeTargetsFromStats(sex, age, heightCm, weightKg, goalType);
+
+      state.profile = { sex, age, heightCm, weightKg, goalType };
+      state.settings.kcalTarget = res.kcal;
+      state.settings.proteinTarget = res.protein;
+      state.settings.dailyAllowance = Math.max(0, Number(document.getElementById('obAllowance').value) || 300);
+      state.wallets.cash = Math.max(0, Number(document.getElementById('obCash').value) || 0);
+      state.wallets.maya = Math.max(0, Number(document.getElementById('obMaya').value) || 0);
+      state.weights[getRealTodayStr()] = Number(weightKg.toFixed(1));
+      state.onboarded = true;
+
+      closeModal('onboardingModal');
+      saveState();
+    }
+
+    function skipOnboardingDefaults() {
+      state.onboarded = true;
+      closeModal('onboardingModal');
+      saveState();
+    }
+
+    function reopenOnboardingCalculator() {
+      closeModal('settingsModal');
+      document.getElementById('obSex').value = state.profile.sex || 'male';
+      document.getElementById('obAge').value = state.profile.age || 20;
+      document.getElementById('obHeight').value = state.profile.heightCm || 170;
+      document.getElementById('obWeight').value = state.profile.weightKg || 68;
+      document.getElementById('obGoal').value = state.profile.goalType || 'recomp';
+      document.getElementById('obAllowance').value = state.settings.dailyAllowance;
+      document.getElementById('obCash').value = state.wallets.cash;
+      document.getElementById('obMaya').value = state.wallets.maya;
+      previewOnboardingCalc();
+      openModal('onboardingModal');
     }
 
     function openModal(id) {
@@ -1277,12 +1941,7 @@
 
     function deleteEntry() {
       const id = document.getElementById('editId').value;
-      const idx = state.entries.findIndex(x => x.id === id);
-      if (idx === -1) return;
-      const e = state.entries[idx];
-      if (e.cost > 0) state.wallets[e.wallet] += e.cost;
-      state.entries.splice(idx, 1);
-      saveState();
+      quickRemoveEntry(id);
       closeModal('editModal');
     }
 
@@ -1326,12 +1985,11 @@
       closeModal('settingsModal');
     }
 
-    /* Backup & Migration */
     function exportJSON() {
       const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
-      a.download = `fitsave-backup-${getTodayStr()}.json`;
+      a.download = `fitsave-backup-${getRealTodayStr()}.json`;
       a.click();
     }
 
@@ -1341,11 +1999,11 @@
       const blob = new Blob([rows.map(r => r.join(',')).join('\n')], { type: 'text/csv' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
-      a.download = `fitsave-ledger-${getTodayStr()}.csv`;
+      a.download = `fitsave-ledger-${getRealTodayStr()}.csv`;
       a.click();
     }
 
-    function importJSON(evt) {
+    function importJSON(evt, fromOnboarding = false) {
       const file = evt.target.files[0];
       if (!file) return;
       const reader = new FileReader();
@@ -1357,8 +2015,13 @@
           if (data.settings) state.settings = { ...state.settings, ...data.settings };
           if (data.presets) state.presets = data.presets;
           if (data.goal) state.goal = { ...state.goal, ...data.goal };
+          if (data.habits) state.habits = data.habits;
+          if (data.weights) state.weights = data.weights;
+          if (data.profile) state.profile = { ...state.profile, ...data.profile };
+          state.onboarded = true;
+          if (fromOnboarding) closeModal('onboardingModal');
           saveState();
-          alert('Backup imported into FITSAVE!');
+          showWrapToast('✅ Backup Restored', 'Your FITSAVE entries, wallets, and streaks are loaded.');
         } catch (err) {
           alert('Invalid JSON backup file.');
         }
@@ -1371,6 +2034,10 @@
     }
 
     renderAll();
+    if (!state.onboarded) {
+      previewOnboardingCalc();
+      openModal('onboardingModal');
+    }
   </script>
 </body>
 </html>
