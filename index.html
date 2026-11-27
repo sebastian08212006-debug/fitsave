@@ -169,6 +169,7 @@
     .dot.green { background: var(--emerald); }
     .dot.blue { background: var(--blue); }
     .dot.amber { background: var(--amber); }
+    .dot.rose { background: var(--rose); }
 
     .badge-chip {
       font-size: 11px;
@@ -231,6 +232,7 @@
       color: var(--emerald);
     }
 
+    /* 4-Card Swipeable Money Deck */
     .deck-wrapper {
       position: relative;
       overflow: hidden;
@@ -243,11 +245,11 @@
     }
     .deck-track {
       display: flex;
-      width: 300%;
+      width: 400%;
       transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
     }
     .deck-slide {
-      width: 33.3333%;
+      width: 25%;
       padding: 16px;
       flex-shrink: 0;
     }
@@ -279,6 +281,7 @@
       padding: 8px 16px 12px;
       border-top: 1px solid var(--border);
       background: rgba(24, 34, 31, 0.45);
+      gap: 6px;
     }
     .dots {
       display: flex;
@@ -296,13 +299,18 @@
       width: 18px;
       background: var(--blue);
     }
+    .deck-actions {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
     .mini-action {
       background: var(--blue-dim);
       border: 1px solid rgba(56, 189, 248, 0.35);
       color: var(--blue);
       font-size: 11px;
       font-weight: 700;
-      padding: 5px 10px;
+      padding: 5px 9px;
       border-radius: 10px;
       cursor: pointer;
     }
@@ -379,7 +387,6 @@
       color: var(--emerald);
     }
 
-    /* Ledger row with 1-tap Quick Remove */
     .ledger-item {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -538,6 +545,46 @@
       font-weight: 600;
     }
 
+    /* Interactive Water Tracker */
+    .water-box {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 11px;
+    }
+    .water-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .water-top span strong {
+      color: var(--blue);
+    }
+    .water-btns {
+      display: grid;
+      grid-template-columns: 1fr 1fr auto;
+      gap: 6px;
+      margin-top: 8px;
+    }
+    .water-btn {
+      background: var(--blue-dim);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      color: var(--blue);
+      border-radius: 9px;
+      padding: 7px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .water-btn.sub {
+      background: var(--surface);
+      border-color: var(--border);
+      color: var(--muted);
+    }
+
     /* Weight Log + Sparkline */
     .weight-row {
       display: flex;
@@ -623,20 +670,41 @@
       margin: 0 auto;
       z-index: 20;
     }
+    .smart-bar-row {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      margin-bottom: 7px;
+    }
     .smart-pill {
+      flex: 1;
       font-size: 11px;
       color: var(--muted);
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 10px;
       padding: 5px 10px;
-      margin-bottom: 7px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
       cursor: pointer;
     }
     .smart-pill strong { color: var(--emerald); }
+    .undo-pill-btn {
+      flex-shrink: 0;
+      background: var(--amber-dim);
+      border: 1px solid rgba(245, 158, 11, 0.45);
+      color: var(--amber);
+      border-radius: 10px;
+      padding: 5px 10px;
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .undo-pill-btn:active {
+      transform: scale(0.94);
+    }
+
     .input-row {
       display: flex;
       gap: 7px;
@@ -826,8 +894,10 @@
     </div>
   </div>
 
+  <!-- 4-Card Swipeable Money Deck -->
   <div class="deck-wrapper" id="moneyDeck">
     <div class="deck-track" id="deckTrack">
+      <!-- Slide 1: Safe to Spend -->
       <div class="deck-slide">
         <div class="card-top">
           <div class="card-tag"><span class="dot blue"></span> SAFE TO SPEND</div>
@@ -848,10 +918,11 @@
         </div>
       </div>
 
+      <!-- Slide 2: Total Money -->
       <div class="deck-slide">
         <div class="card-top">
           <div class="card-tag"><span class="dot green"></span> TOTAL MONEY</div>
-          <span class="badge-chip">All Wallets + Jar</span>
+          <span class="badge-chip" onclick="openTransferModal()">⇄ Transfer</span>
         </div>
         <div class="hero-num" id="totalMoneyNum">₱2,500 <span>total</span></div>
         <div class="hero-sub" id="totalMoneyBreakdown">Cash ₱1,000 • Maya ₱1,500 • Jar ₱0</div>
@@ -867,6 +938,7 @@
         </div>
       </div>
 
+      <!-- Slide 3: Savings Jar -->
       <div class="deck-slide">
         <div class="card-top">
           <div class="card-tag"><span class="dot amber"></span> SAVINGS JAR</div>
@@ -880,6 +952,21 @@
           <strong style="color:var(--amber); cursor:pointer;" onclick="bankLeftover()">+ Bank Leftover ₱</strong>
         </div>
       </div>
+
+      <!-- Slide 4: Loan to Pay -->
+      <div class="deck-slide">
+        <div class="card-top">
+          <div class="card-tag"><span class="dot rose"></span> LOAN TO PAY</div>
+          <span class="badge-chip" onclick="openLoanModal()">Edit Loan</span>
+        </div>
+        <div class="hero-num" id="loanRemNum">₱0 <span>to pay</span></div>
+        <div class="hero-sub" id="loanSubText">No active loan • Tap Edit Loan to set</div>
+        <div class="bar-bg"><div class="bar-fill rose" id="loanBar" style="width: 0%"></div></div>
+        <div class="protein-row">
+          <span id="loanPaidLabel">0% paid off</span>
+          <strong style="color:var(--rose); cursor:pointer;" onclick="openLoanPayModal()">- Pay Loan ₱</strong>
+        </div>
+      </div>
     </div>
 
     <div class="deck-footer">
@@ -887,8 +974,12 @@
         <div class="deck-dot active" onclick="goSlide(0)"></div>
         <div class="deck-dot" onclick="goSlide(1)"></div>
         <div class="deck-dot" onclick="goSlide(2)"></div>
+        <div class="deck-dot" onclick="goSlide(3)"></div>
       </div>
-      <button type="button" class="mini-action amber" onclick="bankLeftover()">Bank Leftover ₱</button>
+      <div class="deck-actions">
+        <button type="button" class="mini-action" onclick="openTransferModal()">⇄ Transfer</button>
+        <button type="button" class="mini-action amber" onclick="bankLeftover()">Bank Leftover ₱</button>
+      </div>
     </div>
   </div>
 
@@ -906,7 +997,7 @@
   <div id="ledgerView"></div>
 
   <div id="backupView" style="display:none;">
-    <!-- 84-Day (12-Week) Consistency Streak Board with Nutrition / Workout Switcher -->
+    <!-- 84-Day (12-Week) Consistency Streak Board -->
     <div class="card">
       <div class="section-head">
         <span>84-Day Streak Board</span>
@@ -921,9 +1012,9 @@
       <div class="inspect-bar" id="streakInspectBar">Tap any box to inspect that day's progress.</div>
     </div>
 
-    <!-- Daily Habits -->
+    <!-- Daily Habits + Interactive Water Intake Tracker -->
     <div class="card">
-      <div class="section-head"><span>Daily Habits</span></div>
+      <div class="section-head"><span>Daily Habits & Water</span></div>
       <div style="display:flex; flex-direction:column; gap:8px;" id="habitsList"></div>
     </div>
 
@@ -960,12 +1051,15 @@
   </div>
 
   <div class="bottom-dock">
-    <div class="smart-pill" id="smartPill" onclick="applySmartSuggestion()">
-      💡 Checking remaining calories & allowance...
+    <div class="smart-bar-row">
+      <div class="smart-pill" id="smartPill" onclick="applySmartSuggestion()">
+        💡 Checking remaining calories & allowance...
+      </div>
+      <button type="button" class="undo-pill-btn" id="undoPillBtn" style="display:none;" onclick="undoLastAction()">↩ Undo</button>
     </div>
     <div class="input-row">
       <button type="button" class="manual-trigger" onclick="openModal('manualModal')">+</button>
-      <input class="chat-input" id="smartInput" placeholder="e.g. '2 eggs, 1 rice' or '₱45 trike maya'" onkeydown="if(event.key==='Enter') handleSmartLog()" />
+      <input class="chat-input" id="smartInput" placeholder="e.g. '2 eggs, 1 rice', '₱45 trike', or '1000 allowance'" onkeydown="if(event.key==='Enter') handleSmartLog()" />
       <button type="button" class="log-btn" onclick="handleSmartLog()">Log</button>
     </div>
   </div>
@@ -1139,6 +1233,41 @@
     </div>
   </div>
 
+  <!-- Wallet-to-Wallet Transfer Modal -->
+  <div class="modal-backdrop" id="transferModal" onclick="if(event.target===this) closeModal('transferModal')">
+    <div class="modal-box">
+      <div class="modal-title">
+        <span>⇄ Wallet Transfer</span>
+        <span style="cursor:pointer;" onclick="closeModal('transferModal')">✕</span>
+      </div>
+      <div class="grid-2">
+        <div class="field">
+          <label>From Wallet</label>
+          <select id="xferFrom" onchange="syncTransferTo()">
+            <option value="cash">Cash</option>
+            <option value="maya">Maya</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>To Wallet</label>
+          <select id="xferTo">
+            <option value="maya" selected>Maya</option>
+            <option value="cash">Cash</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label>Transfer Amount (₱)</label>
+        <input id="xferAmt" type="number" placeholder="200" />
+      </div>
+      <div class="grid-2" style="margin-bottom:8px;">
+        <button type="button" class="pill-btn" onclick="document.getElementById('xferAmt').value = 100">₱100</button>
+        <button type="button" class="pill-btn" onclick="document.getElementById('xferAmt').value = 500">₱500</button>
+      </div>
+      <button type="button" class="btn-full" onclick="submitWalletTransfer()">Move Funds</button>
+    </div>
+  </div>
+
   <!-- Goal Modal -->
   <div class="modal-backdrop" id="goalModal" onclick="if(event.target===this) closeModal('goalModal')">
     <div class="modal-box">
@@ -1152,6 +1281,43 @@
         <div class="field"><label>Current Saved Jar (₱)</label><input id="jarBalanceInput" type="number" /></div>
       </div>
       <button type="button" class="btn-full" onclick="saveGoalModal()">Save Goal</button>
+    </div>
+  </div>
+
+  <!-- Edit Loan Modal -->
+  <div class="modal-backdrop" id="loanModal" onclick="if(event.target===this) closeModal('loanModal')">
+    <div class="modal-box">
+      <div class="modal-title">
+        <span>Loan to Pay Details</span>
+        <span style="cursor:pointer;" onclick="closeModal('loanModal')">✕</span>
+      </div>
+      <div class="field"><label>Loan / Lender Name</label><input id="loanNameInput" placeholder="e.g. Tuition / Personal Loan" /></div>
+      <div class="grid-2">
+        <div class="field"><label>Original Loan Total (₱)</label><input id="loanTotalInput" type="number" /></div>
+        <div class="field"><label>Remaining Balance (₱)</label><input id="loanRemInput" type="number" /></div>
+      </div>
+      <button type="button" class="btn-full" onclick="saveLoanModal()">Save Loan</button>
+    </div>
+  </div>
+
+  <!-- Pay Loan Modal -->
+  <div class="modal-backdrop" id="loanPayModal" onclick="if(event.target===this) closeModal('loanPayModal')">
+    <div class="modal-box">
+      <div class="modal-title">
+        <span>Make Loan Payment</span>
+        <span style="cursor:pointer;" onclick="closeModal('loanPayModal')">✕</span>
+      </div>
+      <div class="grid-2">
+        <div class="field"><label>Payment Amount (₱)</label><input id="loanPayAmtInput" type="number" placeholder="100" /></div>
+        <div class="field">
+          <label>Pay From Wallet</label>
+          <select id="loanPayWalletInput">
+            <option value="cash">Cash</option>
+            <option value="maya">Maya</option>
+          </select>
+        </div>
+      </div>
+      <button type="button" class="btn-full" onclick="submitLoanPayment()">Confirm Payment</button>
     </div>
   </div>
 
@@ -1205,6 +1371,11 @@
         name: 'Seiko 5 Watch',
         target: 6500
       },
+      loan: {
+        name: 'Personal Loan',
+        total: 0,
+        remaining: 0
+      },
       presets: [
         { id: 'p1', name: 'Breakfast Combo', type: 'combo', kcal: 445, protein: 17, cost: 35, wallet: 'cash' },
         { id: 'p2', name: 'Quick Lunch', type: 'combo', kcal: 580, protein: 42, cost: 85, wallet: 'maya' },
@@ -1215,6 +1386,7 @@
       ],
       entries: [],
       habits: {},
+      water: {},
       weights: {}
     };
 
@@ -1242,6 +1414,38 @@
     let streakBoardMode = 'nutrition';
     let selectedBoardDate = realTodayStr;
     let toastTimer = null;
+    let undoStack = [];
+
+    function pushUndoSnapshot(label) {
+      undoStack.push({
+        label,
+        snapshot: JSON.stringify({
+          entries: state.entries,
+          wallets: state.wallets,
+          loan: state.loan,
+          settings: state.settings,
+          habits: state.habits,
+          water: state.water
+        })
+      });
+      if (undoStack.length > 15) undoStack.shift();
+    }
+
+    function undoLastAction() {
+      if (undoStack.length === 0) return;
+      const last = undoStack.pop();
+      try {
+        const snap = JSON.parse(last.snapshot);
+        state.entries = snap.entries;
+        state.wallets = snap.wallets;
+        state.loan = snap.loan;
+        state.settings = snap.settings;
+        state.habits = snap.habits;
+        state.water = snap.water;
+        saveState();
+        showWrapToast('↩ Undone', `Reverted: ${last.label}`);
+      } catch (e) {}
+    }
 
     function syncRealDateIfChanged() {
       const latestRealToday = getRealTodayStr();
@@ -1275,7 +1479,9 @@
             settings: { ...DEFAULT_STATE.settings, ...(parsed.settings || {}) },
             wallets: { ...DEFAULT_STATE.wallets, ...(parsed.wallets || {}) },
             goal: { ...DEFAULT_STATE.goal, ...(parsed.goal || {}) },
+            loan: { ...DEFAULT_STATE.loan, ...(parsed.loan || {}) },
             habits: parsed.habits || {},
+            water: parsed.water || {},
             weights: parsed.weights || {}
           };
         }
@@ -1425,6 +1631,25 @@
       document.getElementById('goalBar').style.width = goalPct + '%';
       document.getElementById('goalPctLabel').textContent = `${goalPct}% funded`;
 
+      /* Slide 4: Loan to Pay */
+      const loanTotal = Math.max(0, Number(state.loan.total) || 0);
+      const loanRem = Math.max(0, Number(state.loan.remaining) || 0);
+      document.getElementById('loanRemNum').innerHTML = `₱${loanRem.toLocaleString()} <span>to pay</span>`;
+      if (loanTotal <= 0 && loanRem <= 0) {
+        document.getElementById('loanSubText').textContent = 'No active loan • Tap Edit Loan to set';
+        document.getElementById('loanBar').style.width = '0%';
+        document.getElementById('loanPaidLabel').textContent = 'Debt-free';
+      } else {
+        const denom = Math.max(loanTotal, loanRem, 1);
+        const paidAmt = Math.max(0, denom - loanRem);
+        const paidPct = Math.min(100, Math.round((paidAmt / denom) * 100));
+        document.getElementById('loanSubText').textContent = `${state.loan.name} • Total: ₱${denom.toLocaleString()}`;
+        document.getElementById('loanBar').style.width = paidPct + '%';
+        document.getElementById('loanPaidLabel').textContent = `${paidPct}% paid off`;
+      }
+
+      document.getElementById('undoPillBtn').style.display = undoStack.length > 0 ? 'inline-block' : 'none';
+
       renderPresets();
       renderLedger(dayEntries);
       renderStreakBoard84();
@@ -1457,11 +1682,13 @@
         kcal: p.kcal || 0,
         protein: p.protein || 0,
         cost: p.cost || 0,
-        wallet: p.wallet || 'cash'
+        wallet: p.wallet || 'cash',
+        loanPayment: p.loanPayment || 0
       });
     }
 
-    function addEntry(item) {
+    function addEntry(item, skipUndo = false) {
+      if (!skipUndo) pushUndoSnapshot(item.name);
       const entry = {
         id: 'e_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
         date: currentDateStr,
@@ -1470,7 +1697,8 @@
         kcal: Number(item.kcal) || 0,
         protein: Number(item.protein) || 0,
         cost: Number(item.cost) || 0,
-        wallet: item.wallet || 'cash'
+        wallet: item.wallet || 'cash',
+        loanPayment: Number(item.loanPayment) || 0
       };
       if (entry.cost > 0) {
         state.wallets[entry.wallet] = Math.max(0, (state.wallets[entry.wallet] || 0) - entry.cost);
@@ -1484,8 +1712,12 @@
       const idx = state.entries.findIndex(x => x.id === id);
       if (idx === -1) return;
       const e = state.entries[idx];
+      pushUndoSnapshot(`Delete ${e.name}`);
       if (e.cost > 0) {
         state.wallets[e.wallet] = (state.wallets[e.wallet] || 0) + e.cost;
+      }
+      if (e.loanPayment > 0) {
+        state.loan.remaining = (Number(state.loan.remaining) || 0) + e.loanPayment;
       }
       state.entries.splice(idx, 1);
       saveState();
@@ -1518,7 +1750,7 @@
       }).join('');
     }
 
-    /* 84-Day (7x12) Streak Board with Nutrition / Home Workout Toggle */
+    /* 84-Day (7x12) Streak Board */
     function setStreakBoardMode(mode) {
       streakBoardMode = mode;
       renderStreakBoard84();
@@ -1596,9 +1828,10 @@
       const selProt = selEntries.reduce((s, e) => s + (e.protein || 0), 0);
       const selSpent = selEntries.reduce((s, e) => s + (e.cost || 0), 0);
       const selWorkout = Boolean(state.habits[selectedBoardDate] && state.habits[selectedBoardDate]['Home Workout']);
+      const selWater = Number(state.water[selectedBoardDate] || 0);
 
       document.getElementById('streakInspectBar').textContent =
-        `${selectedBoardDate}: ${selKcal.toLocaleString()} kcal • ${selProt}g P • ₱${selSpent} • Workout: ${selWorkout ? '✅ Done' : '—'}`;
+        `${selectedBoardDate}: ${selKcal.toLocaleString()} kcal • ${selProt}g P • ₱${selSpent} • 💧${selWater}ml • Workout: ${selWorkout ? '✅' : '—'}`;
     }
 
     /* Weight Log & SVG Sparkline */
@@ -1676,6 +1909,7 @@
         ((p.protein || 0) > 0 || (p.kcal || 0) > 0)
       );
       smartSuggestionItem = fit || null;
+
       if (fit) {
         pill.innerHTML = `💡 Fits budget (${leftKcal} kcal, ₱${leftSpend}): <strong>${fit.name}</strong> (tap to log)`;
       } else {
@@ -1693,6 +1927,21 @@
       if (!raw) return;
 
       const lower = raw.toLowerCase();
+
+      /* Fix: Handle "1000 allowance" or "allowance 1000" commands */
+      const allowanceMatch =
+        lower.match(/^(?:daily\s+)?allowance\s*(?:₱|php|p)?\s*(\d+)$/i) ||
+        lower.match(/^(?:₱|php|p)?\s*(\d+)\s*(?:daily\s+)?allowance$/i);
+      if (allowanceMatch) {
+        const nextAllowance = Math.max(0, parseInt(allowanceMatch[1], 10));
+        pushUndoSnapshot(`Allowance ₱${nextAllowance}`);
+        state.settings.dailyAllowance = nextAllowance;
+        input.value = '';
+        saveState();
+        showWrapToast('💵 Daily Allowance Updated', `Daily allowance is now ₱${nextAllowance.toLocaleString()}.`);
+        return;
+      }
+
       const pesoMatch = lower.match(/(?:₱|php|p)\s*(\d+)/i) || lower.match(/(\d+)\s*(?:pesos|php)/i);
       const wallet = lower.includes('maya') ? 'maya' : 'cash';
 
@@ -1724,8 +1973,8 @@
     }
 
     function goSlide(idx) {
-      currentSlide = Math.max(0, Math.min(2, idx));
-      document.getElementById('deckTrack').style.transform = `translateX(-${currentSlide * 33.3333}%)`;
+      currentSlide = Math.max(0, Math.min(3, idx));
+      document.getElementById('deckTrack').style.transform = `translateX(-${currentSlide * 25}%)`;
       document.querySelectorAll('.deck-dot').forEach((d, i) => d.classList.toggle('active', i === currentSlide));
     }
 
@@ -1762,34 +2011,70 @@
       const leftover = state.settings.dailyAllowance - spent;
 
       if (leftover <= 0) {
-        showWrapToast('⚠️ No Leftover Allowance', `Spent ₱${spent} of ₱${state.settings.dailyAllowance} today • ${eatenKcal.toLocaleString()} kcal • ${eatenProt}g P`);
+        showWrapToast('⚠️ No Leftover Allowance', `You already spent ₱${spent.toLocaleString()} of your ₱${state.settings.dailyAllowance.toLocaleString()} daily allowance.`);
         return;
       }
 
+      pushUndoSnapshot(`Bank ₱${leftover}`);
       state.wallets.jar += leftover;
-      addEntry({ name: 'Banked to Savings Jar', type: 'expense', cost: leftover, wallet: 'cash' });
+      addEntry({ name: 'Banked to Savings Jar', type: 'expense', cost: leftover, wallet: 'cash' }, true);
       goSlide(2);
       showWrapToast(
         `🌙 Saved ₱${leftover.toLocaleString()} to ${state.goal.name}!`,
-        `Jar Total: ₱${state.wallets.jar.toLocaleString()} • Today: ${eatenKcal.toLocaleString()} kcal & ${eatenProt}g protein`
+        `Jar Total: ₱${state.wallets.jar.toLocaleString()} • Day Wrap-Up: ${eatenKcal.toLocaleString()} kcal & ${eatenProt}g protein`
       );
     }
 
     function quickTopUp(wallet, amt) {
+      pushUndoSnapshot(`+₱${amt} ${wallet.toUpperCase()}`);
       state.wallets[wallet] += amt;
       saveState();
     }
 
+    /* Interactive Water Tracker & Daily Habits */
+    function addWater(ml) {
+      const prev = Number(state.water[currentDateStr] || 0);
+      const next = Math.max(0, Math.min(5000, prev + ml));
+      state.water[currentDateStr] = next;
+      if (!state.habits[currentDateStr]) state.habits[currentDateStr] = {};
+      state.habits[currentDateStr]['2L+ Water'] = next >= 2000;
+      saveState();
+    }
+
     function renderHabits() {
-      const habits = ['Walk / Commute', 'Home Workout', '2L+ Water'];
+      const habits = ['Walk / Commute', 'Home Workout'];
       const dayH = state.habits[currentDateStr] || {};
-      document.getElementById('habitsList').innerHTML = habits.map(h => `
+      const currentWater = Number(state.water[currentDateStr] || 0);
+      const waterGoal = 2000;
+      const waterPct = Math.min(100, Math.round((currentWater / waterGoal) * 100));
+
+      const checkboxesHtml = habits.map(h => `
         <label style="display:flex; align-items:center; gap:10px; background:var(--surface-2); padding:10px; border-radius:12px; font-size:13px; cursor:pointer;">
           <input type="checkbox" ${dayH[h] ? 'checked' : ''} onchange="toggleHabit('${h}')" style="width:16px; height:16px;" />
           <span>${h}</span>
         </label>
       `).join('');
+
+      const waterHtml = `
+        <div class="water-box">
+          <div class="water-top">
+            <span>💧 Water Intake</span>
+            <span><strong>${currentWater.toLocaleString()}</strong> / 2,000 ml ${currentWater >= waterGoal ? '✅' : ''}</span>
+          </div>
+          <div class="bar-bg" style="margin-bottom:0;">
+            <div class="bar-fill blue" style="width:${waterPct}%"></div>
+          </div>
+          <div class="water-btns">
+            <button type="button" class="water-btn" onclick="addWater(250)">+ 250 ml</button>
+            <button type="button" class="water-btn" onclick="addWater(500)">+ 500 ml</button>
+            <button type="button" class="water-btn sub" onclick="addWater(-250)">-250</button>
+          </div>
+        </div>
+      `;
+
+      document.getElementById('habitsList').innerHTML = checkboxesHtml + waterHtml;
     }
+
     function toggleHabit(h) {
       if (!state.habits[currentDateStr]) state.habits[currentDateStr] = {};
       state.habits[currentDateStr][h] = !state.habits[currentDateStr][h];
@@ -1928,6 +2213,7 @@
       const id = document.getElementById('editId').value;
       const e = state.entries.find(x => x.id === id);
       if (!e) return;
+      pushUndoSnapshot(`Edit ${e.name}`);
       if (e.cost > 0) state.wallets[e.wallet] += e.cost;
       e.name = document.getElementById('editName').value.trim() || e.name;
       e.kcal = Number(document.getElementById('editKcal').value) || 0;
@@ -1957,9 +2243,42 @@
     }
     function saveWalletModal() {
       const key = document.getElementById('activeWalletKey').value;
+      pushUndoSnapshot(`Set ${key.toUpperCase()}`);
       state.wallets[key] = Math.max(0, Number(document.getElementById('walletAmountInput').value) || 0);
       saveState();
       closeModal('walletModal');
+    }
+
+    /* Wallet-to-Wallet Transfer */
+    function openTransferModal() {
+      document.getElementById('xferFrom').value = 'cash';
+      document.getElementById('xferTo').value = 'maya';
+      document.getElementById('xferAmt').value = '';
+      openModal('transferModal');
+    }
+    function syncTransferTo() {
+      const from = document.getElementById('xferFrom').value;
+      document.getElementById('xferTo').value = from === 'cash' ? 'maya' : 'cash';
+    }
+    function submitWalletTransfer() {
+      const from = document.getElementById('xferFrom').value;
+      const to = document.getElementById('xferTo').value;
+      const amt = Math.max(0, Number(document.getElementById('xferAmt').value) || 0);
+      if (from === to || amt <= 0) return;
+
+      const available = Number(state.wallets[from] || 0);
+      const actual = Math.min(available, amt);
+      if (actual <= 0) {
+        showWrapToast('⚠️ Insufficient Funds', `No balance available in ${from.toUpperCase()}.`);
+        return;
+      }
+
+      pushUndoSnapshot(`Transfer ₱${actual} ${from.toUpperCase()}→${to.toUpperCase()}`);
+      state.wallets[from] = available - actual;
+      state.wallets[to] = (Number(state.wallets[to]) || 0) + actual;
+      closeModal('transferModal');
+      saveState();
+      showWrapToast('⇄ Transfer Complete', `Moved ₱${actual.toLocaleString()} from ${from.toUpperCase()} to ${to.toUpperCase()}.`);
     }
 
     function openGoalModal() {
@@ -1974,6 +2293,54 @@
       state.wallets.jar = Math.max(0, Number(document.getElementById('jarBalanceInput').value) || 0);
       saveState();
       closeModal('goalModal');
+    }
+
+    /* Loan Modals */
+    function openLoanModal() {
+      document.getElementById('loanNameInput').value = state.loan.name || 'Personal Loan';
+      document.getElementById('loanTotalInput').value = state.loan.total || 0;
+      document.getElementById('loanRemInput').value = state.loan.remaining || 0;
+      openModal('loanModal');
+    }
+    function saveLoanModal() {
+      const name = document.getElementById('loanNameInput').value.trim() || 'Personal Loan';
+      const rem = Math.max(0, Number(document.getElementById('loanRemInput').value) || 0);
+      const rawTotal = Math.max(0, Number(document.getElementById('loanTotalInput').value) || 0);
+      state.loan = {
+        name,
+        total: Math.max(rawTotal, rem),
+        remaining: rem
+      };
+      saveState();
+      closeModal('loanModal');
+    }
+
+    function openLoanPayModal() {
+      const rem = Number(state.loan.remaining) || 0;
+      if (rem <= 0) {
+        openLoanModal();
+        return;
+      }
+      document.getElementById('loanPayAmtInput').value = Math.min(100, rem);
+      openModal('loanPayModal');
+    }
+    function submitLoanPayment() {
+      const rem = Number(state.loan.remaining) || 0;
+      const amt = Math.min(rem, Math.max(0, Number(document.getElementById('loanPayAmtInput').value) || 0));
+      const wallet = document.getElementById('loanPayWalletInput').value;
+      if (amt <= 0) return;
+
+      pushUndoSnapshot(`Loan Pay ₱${amt}`);
+      state.loan.remaining = Math.max(0, rem - amt);
+      addEntry({
+        name: `Loan Payment (${state.loan.name})`,
+        type: 'expense',
+        cost: amt,
+        wallet,
+        loanPayment: amt
+      }, true);
+      closeModal('loanPayModal');
+      showWrapToast('✅ Loan Payment Logged', `Paid ₱${amt.toLocaleString()} • Remaining: ₱${state.loan.remaining.toLocaleString()}`);
     }
 
     function saveSettings() {
@@ -2015,13 +2382,15 @@
           if (data.settings) state.settings = { ...state.settings, ...data.settings };
           if (data.presets) state.presets = data.presets;
           if (data.goal) state.goal = { ...state.goal, ...data.goal };
+          if (data.loan) state.loan = { ...state.loan, ...data.loan };
           if (data.habits) state.habits = data.habits;
+          if (data.water) state.water = data.water;
           if (data.weights) state.weights = data.weights;
           if (data.profile) state.profile = { ...state.profile, ...data.profile };
           state.onboarded = true;
           if (fromOnboarding) closeModal('onboardingModal');
           saveState();
-          showWrapToast('✅ Backup Restored', 'Your FITSAVE entries, wallets, and streaks are loaded.');
+          showWrapToast('✅ Backup Restored', 'Your FITSAVE entries, wallets, loan, water, and streaks are loaded.');
         } catch (err) {
           alert('Invalid JSON backup file.');
         }
