@@ -487,6 +487,7 @@
     }
     .val-food { color: var(--emerald); }
     .val-exp { color: var(--blue); }
+    .val-inc { color: var(--emerald); }
 
     .quick-del-btn {
       width: 28px;
@@ -815,6 +816,20 @@
       border-radius: 10px;
       font-size: 13px;
     }
+    .unit-row {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+    .unit-row input {
+      flex: 1;
+      min-width: 0;
+    }
+    .unit-row select {
+      width: 68px;
+      flex-shrink: 0;
+      padding: 10px 6px;
+    }
     .btn-full {
       width: 100%;
       padding: 11px;
@@ -955,10 +970,30 @@
     </div>
   </div>
 
-  <!-- 4-Card Swipeable Money Deck -->
+  <!-- 4-Card Swipeable Money Deck (Total Money First!) -->
   <div class="deck-wrapper" id="moneyDeck">
     <div class="deck-track" id="deckTrack">
-      <!-- Slide 1: Safe to Spend -->
+      <!-- Slide 1: Total Money -->
+      <div class="deck-slide">
+        <div class="card-top">
+          <div class="card-tag"><span class="dot green"></span> TOTAL MONEY</div>
+          <span class="badge-chip" onclick="openTotalMoneyModal()">Edit Total Money</span>
+        </div>
+        <div class="hero-num" id="totalMoneyNum">₱2,500 <span>total</span></div>
+        <div class="hero-sub" id="totalMoneyBreakdown">Cash ₱1,000 • Maya ₱1,500 • Jar ₱0</div>
+        <div class="wallet-row">
+          <div class="wallet-pill" onclick="quickTopUp('cash', 100)">
+            <span>+₱100 Cash</span>
+            <strong>+ Add</strong>
+          </div>
+          <div class="wallet-pill" onclick="quickTopUp('maya', 100)">
+            <span>+₱100 Maya</span>
+            <strong>+ Add</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 2: Safe to Spend -->
       <div class="deck-slide">
         <div class="card-top">
           <div class="card-tag"><span class="dot blue"></span> SAFE TO SPEND</div>
@@ -975,26 +1010,6 @@
           <div class="wallet-pill" onclick="openWalletModal('maya')">
             <span>Maya</span>
             <strong id="mayaBalLabel">₱1,500</strong>
-          </div>
-        </div>
-      </div>
-
-      <!-- Slide 2: Total Money -->
-      <div class="deck-slide">
-        <div class="card-top">
-          <div class="card-tag"><span class="dot green"></span> TOTAL MONEY</div>
-          <span class="badge-chip" onclick="openTransferModal()">⇄ Transfer</span>
-        </div>
-        <div class="hero-num" id="totalMoneyNum">₱2,500 <span>total</span></div>
-        <div class="hero-sub" id="totalMoneyBreakdown">Cash ₱1,000 • Maya ₱1,500 • Jar ₱0</div>
-        <div class="wallet-row">
-          <div class="wallet-pill" onclick="quickTopUp('cash', 100)">
-            <span>+₱100 Cash</span>
-            <strong>+ Add</strong>
-          </div>
-          <div class="wallet-pill" onclick="quickTopUp('maya', 100)">
-            <span>+₱100 Maya</span>
-            <strong>+ Add</strong>
           </div>
         </div>
       </div>
@@ -1120,7 +1135,7 @@
     </div>
     <div class="input-row">
       <button type="button" class="manual-trigger" onclick="openModal('manualModal')">+</button>
-      <input class="chat-input" id="smartInput" placeholder="e.g. '2 eggs, 1 rice', '1 siomai', or '1000 allowance'" onkeydown="if(event.key==='Enter') handleSmartLog()" />
+      <input class="chat-input" id="smartInput" placeholder="e.g. '2 eggs, 1 rice', 'add 20 pesos', or '1000 allowance'" onkeydown="if(event.key==='Enter') handleSmartLog()" />
       <button type="button" class="log-btn" onclick="handleSmartLog()">Log</button>
     </div>
   </div>
@@ -1191,20 +1206,43 @@
       </div>
       <div class="grid-2">
         <div class="field">
-          <label>Height (cm)</label>
-          <input id="obHeight" type="number" value="170" oninput="previewOnboardingCalc()" />
+          <label>Height</label>
+          <div class="unit-row" id="obHeightCmWrap">
+            <input id="obHeight" type="number" step="0.1" value="170" oninput="previewOnboardingCalc()" />
+            <select id="obHeightUnit" onchange="toggleHeightUnit()">
+              <option value="cm" selected>cm</option>
+              <option value="ft">ft</option>
+            </select>
+          </div>
+          <div class="unit-row" id="obHeightFtWrap" style="display:none;">
+            <input id="obHeightFt" type="number" min="3" max="8" value="5" placeholder="ft" oninput="previewOnboardingCalc()" />
+            <input id="obHeightIn" type="number" min="0" max="11" step="0.5" value="7" placeholder="in" oninput="previewOnboardingCalc()" />
+            <select id="obHeightUnitFt" onchange="toggleHeightUnitFromFt()">
+              <option value="cm">cm</option>
+              <option value="ft" selected>ft</option>
+            </select>
+          </div>
         </div>
         <div class="field">
-          <label>Weight (kg)</label>
-          <input id="obWeight" type="number" step="0.1" value="68" oninput="previewOnboardingCalc()" />
+          <label>Weight</label>
+          <div class="unit-row">
+            <input id="obWeight" type="number" step="0.1" value="68" oninput="previewOnboardingCalc()" />
+            <select id="obWeightUnit" onchange="toggleWeightUnit()">
+              <option value="kg" selected>kg</option>
+              <option value="lbs">lbs</option>
+            </select>
+          </div>
         </div>
       </div>
       <div class="field">
         <label>Fitness Goal</label>
         <select id="obGoal" onchange="previewOnboardingCalc()">
+          <option value="aggressive_cut">Aggressive Fat Loss / Mini-Cut (-550 kcal)</option>
+          <option value="cut">Steady Fat Loss / Cut (-400 kcal)</option>
           <option value="recomp" selected>Lean Recomp (Build muscle + stay lean)</option>
-          <option value="cut">Lose Fat / Cut</option>
-          <option value="bulk">Gain Muscle / Lean Bulk</option>
+          <option value="maintain">Maintain Weight & Performance</option>
+          <option value="bulk">Lean Muscle Gain (+250 kcal)</option>
+          <option value="aggressive_bulk">Aggressive Bulk / Hardgainer (+450 kcal)</option>
         </select>
       </div>
       <div class="calc-preview">
@@ -1234,6 +1272,38 @@
     </div>
   </div>
 
+  <!-- Edit Total Money Modal -->
+  <div class="modal-backdrop" id="totalMoneyModal" onclick="if(event.target===this) closeModal('totalMoneyModal')">
+    <div class="modal-box">
+      <div class="modal-title">
+        <span>Edit Total Money</span>
+        <span style="cursor:pointer;" onclick="closeModal('totalMoneyModal')">✕</span>
+      </div>
+      <div style="font-size:12px; color:var(--muted); margin-bottom:10px; line-height:1.4;">
+        Set your exact balances across Cash, Maya, and Savings Jar.
+      </div>
+      <div class="grid-3">
+        <div class="field">
+          <label>Cash (₱)</label>
+          <input id="tmCashInput" type="number" oninput="updateTotalMoneyPreview()" />
+        </div>
+        <div class="field">
+          <label>Maya (₱)</label>
+          <input id="tmMayaInput" type="number" oninput="updateTotalMoneyPreview()" />
+        </div>
+        <div class="field">
+          <label>Savings Jar (₱)</label>
+          <input id="tmJarInput" type="number" oninput="updateTotalMoneyPreview()" />
+        </div>
+      </div>
+      <div class="calc-preview">
+        <span>New Total Money:</span>
+        <strong id="tmPreviewTotal">₱2,500</strong>
+      </div>
+      <button type="button" class="btn-full" onclick="saveTotalMoneyModal()">Save Total Money</button>
+    </div>
+  </div>
+
   <!-- Manual Entry Modal -->
   <div class="modal-backdrop" id="manualModal" onclick="if(event.target===this) closeModal('manualModal')">
     <div class="modal-box">
@@ -1245,7 +1315,8 @@
         <label>Type</label>
         <select id="manType" onchange="toggleManualFields()">
           <option value="food">Food / Meal</option>
-          <option value="expense">Expense (₱)</option>
+          <option value="expense">Expense (-₱)</option>
+          <option value="income">Add Money / Income (+₱)</option>
           <option value="combo">Combo (Food + ₱ Cost)</option>
         </select>
       </div>
@@ -1265,7 +1336,7 @@
       </div>
       <div class="grid-2" id="expFields" style="display:none;">
         <div class="field">
-          <label>Cost (₱)</label>
+          <label id="manCostLabel">Cost (₱)</label>
           <input id="manCost" type="number" placeholder="85" />
         </div>
         <div class="field">
@@ -1460,7 +1531,9 @@
         sex: 'male',
         age: 20,
         heightCm: 170,
+        heightUnit: 'cm',
         weightKg: 68,
+        weightUnit: 'kg',
         goalType: 'recomp'
       },
       settings: {
@@ -1690,16 +1763,19 @@
       dayBtn.classList.toggle('active-mode', state.settings.dayMode === 'school');
 
       const goalLabels = {
-        recomp: 'Lean Recomp & Daily Budget',
+        aggressive_cut: 'Mini-Cut & Daily Budget',
         cut: 'Fat Loss Cut & Daily Budget',
-        bulk: 'Lean Muscle Gain & Daily Budget'
+        recomp: 'Lean Recomp & Daily Budget',
+        maintain: 'Maintenance & Daily Budget',
+        bulk: 'Lean Muscle Gain & Daily Budget',
+        aggressive_bulk: 'Aggressive Bulk & Daily Budget'
       };
       document.getElementById('goalHeaderSub').textContent = goalLabels[state.profile.goalType] || 'Lean Recomp & Daily Budget';
 
       const dayEntries = state.entries.filter(e => e.date === currentDateStr);
       const eatenKcal = dayEntries.reduce((s, e) => s + (e.kcal || 0), 0);
       const eatenProt = dayEntries.reduce((s, e) => s + (e.protein || 0), 0);
-      const spentPhp = dayEntries.reduce((s, e) => s + (e.cost || 0), 0);
+      const spentPhp = dayEntries.reduce((s, e) => s + (e.type !== 'income' ? (e.cost || 0) : 0), 0);
 
       const targetKcal = getEffectiveKcalTarget();
       const leftKcal = targetKcal - eatenKcal;
@@ -1731,6 +1807,12 @@
       document.getElementById('waterSubText').textContent = `Drank: ${currentWater.toLocaleString()} ml • Daily Goal: 2,000 ml`;
       document.getElementById('waterBar').style.width = waterPct + '%';
 
+      /* Total Money (Bottom Deck Slide 1) */
+      const totalMoney = state.wallets.cash + state.wallets.maya + state.wallets.jar;
+      document.getElementById('totalMoneyNum').innerHTML = `₱${totalMoney.toLocaleString()} <span>total</span>`;
+      document.getElementById('totalMoneyBreakdown').textContent = `Cash ₱${state.wallets.cash.toLocaleString()} • Maya ₱${state.wallets.maya.toLocaleString()} • Jar ₱${state.wallets.jar.toLocaleString()}`;
+
+      /* Safe to Spend (Bottom Deck Slide 2) */
       const allowance = state.settings.dailyAllowance;
       const leftSpend = allowance - spentPhp;
       document.getElementById('spendModeBadge').textContent = `Daily: ₱${allowance}`;
@@ -1745,16 +1827,14 @@
       document.getElementById('cashBalLabel').textContent = `₱${state.wallets.cash.toLocaleString()}`;
       document.getElementById('mayaBalLabel').textContent = `₱${state.wallets.maya.toLocaleString()}`;
 
-      const totalMoney = state.wallets.cash + state.wallets.maya + state.wallets.jar;
-      document.getElementById('totalMoneyNum').innerHTML = `₱${totalMoney.toLocaleString()} <span>total</span>`;
-      document.getElementById('totalMoneyBreakdown').textContent = `Cash ₱${state.wallets.cash.toLocaleString()} • Maya ₱${state.wallets.maya.toLocaleString()} • Jar ₱${state.wallets.jar.toLocaleString()}`;
-
+      /* Savings Jar (Bottom Deck Slide 3) */
       document.getElementById('savedJarNum').innerHTML = `₱${state.wallets.jar.toLocaleString()} <span>saved</span>`;
       document.getElementById('goalSubText').textContent = `Goal: ${state.goal.name} (₱${state.goal.target.toLocaleString()})`;
       const goalPct = Math.min(100, Math.round((state.wallets.jar / Math.max(1, state.goal.target)) * 100));
       document.getElementById('goalBar').style.width = goalPct + '%';
       document.getElementById('goalPctLabel').textContent = `${goalPct}% funded`;
 
+      /* Loan to Pay (Bottom Deck Slide 4) */
       const loanTotal = Math.max(0, Number(state.loan.total) || 0);
       const loanRem = Math.max(0, Number(state.loan.remaining) || 0);
       document.getElementById('loanRemNum').innerHTML = `₱${loanRem.toLocaleString()} <span>to pay</span>`;
@@ -1788,7 +1868,9 @@
         const isCombo = p.type === 'combo';
         const sub = p.type === 'expense'
           ? `₱${p.cost}`
-          : `${p.kcal}kcal • ${p.protein}g${p.cost > 0 ? ' • ₱' + p.cost : ''}`;
+          : p.type === 'income'
+            ? `+₱${p.cost}`
+            : `${p.kcal}kcal • ${p.protein}g${p.cost > 0 ? ' • ₱' + p.cost : ''}`;
         return `<div class="chip ${isCombo ? 'combo' : ''}" onclick="logPreset('${p.id}')">
           <span>${isCombo ? '⚡' : '•'} ${p.name}</span>
           <small>${sub}</small>
@@ -1826,7 +1908,11 @@
         todoTag: item.todoTag || ''
       };
       if (entry.cost > 0) {
-        state.wallets[entry.wallet] = Math.max(0, (state.wallets[entry.wallet] || 0) - entry.cost);
+        if (entry.type === 'income') {
+          state.wallets[entry.wallet] = (state.wallets[entry.wallet] || 0) + entry.cost;
+        } else {
+          state.wallets[entry.wallet] = Math.max(0, (state.wallets[entry.wallet] || 0) - entry.cost);
+        }
       }
       state.entries.unshift(entry);
       saveState();
@@ -1839,7 +1925,11 @@
       const e = state.entries[idx];
       pushUndoSnapshot(`Delete ${e.name}`);
       if (e.cost > 0) {
-        state.wallets[e.wallet] = (state.wallets[e.wallet] || 0) + e.cost;
+        if (e.type === 'income') {
+          state.wallets[e.wallet] = Math.max(0, (state.wallets[e.wallet] || 0) - e.cost);
+        } else {
+          state.wallets[e.wallet] = (state.wallets[e.wallet] || 0) + e.cost;
+        }
       }
       if (e.loanPayment > 0) {
         state.loan.remaining = (Number(state.loan.remaining) || 0) + e.loanPayment;
@@ -1866,9 +1956,15 @@
             ? `<span class="pending-tag">🔎 Research Later</span>`
             : '';
 
-        const rightText = e.cost > 0
-          ? `<div class="val-exp">-₱${e.cost}</div>${(e.kcal > 0 || e.type === 'combo') ? `<div class="ledger-meta">${e.kcal} kcal • ${e.protein}g P</div>` : ''}`
-          : `<div class="val-food">+${e.kcal} kcal</div><div class="ledger-meta">${e.protein}g P</div>`;
+        let rightText = '';
+        if (e.type === 'income') {
+          rightText = `<div class="val-inc">+₱${e.cost}</div><div class="ledger-meta">Added</div>`;
+        } else if (e.cost > 0) {
+          rightText = `<div class="val-exp">-₱${e.cost}</div>${(e.kcal > 0 || e.type === 'combo') ? `<div class="ledger-meta">${e.kcal} kcal • ${e.protein}g P</div>` : ''}`;
+        } else {
+          rightText = `<div class="val-food">+${e.kcal} kcal</div><div class="ledger-meta">${e.protein}g P</div>`;
+        }
+
         return `<div class="ledger-item">
           <div class="ledger-main" onclick="openEditModal('${e.id}')">
             <div style="min-width:0;">
@@ -1957,7 +2053,7 @@
       const selEntries = state.entries.filter(e => e.date === selectedBoardDate);
       const selKcal = selEntries.reduce((s, e) => s + (e.kcal || 0), 0);
       const selProt = selEntries.reduce((s, e) => s + (e.protein || 0), 0);
-      const selSpent = selEntries.reduce((s, e) => s + (e.cost || 0), 0);
+      const selSpent = selEntries.reduce((s, e) => s + (e.type !== 'income' ? (e.cost || 0) : 0), 0);
       const selWorkout = Boolean(state.habits[selectedBoardDate] && state.habits[selectedBoardDate]['Home Workout']);
       const selWater = Number(state.water[selectedBoardDate] || 0);
 
@@ -2034,6 +2130,7 @@
     function updateSmartPill(leftKcal, leftProt, leftSpend) {
       const pill = document.getElementById('smartPill');
       const fit = state.presets.find(p =>
+        p.type !== 'income' &&
         (p.kcal || 0) <= Math.max(0, leftKcal) &&
         (p.cost || 0) <= Math.max(0, leftSpend) &&
         ((p.protein || 0) > 0 || (p.kcal || 0) > 0)
@@ -2114,6 +2211,7 @@
 
       const lower = raw.toLowerCase();
 
+      /* 1. Daily allowance setter */
       const allowanceMatch =
         lower.match(/^(?:daily\s+)?allowance\s*(?:₱|php|p)?\s*(\d+)$/i) ||
         lower.match(/^(?:₱|php|p)?\s*(\d+)\s*(?:daily\s+)?allowance$/i);
@@ -2130,9 +2228,26 @@
       const pesoMatch = lower.match(/(?:₱|php|p)\s*(\d+)/i) || lower.match(/(\d+)\s*(?:pesos|php)/i);
       const wallet = lower.includes('maya') ? 'maya' : 'cash';
 
+      /* 2. Income / Add Money ("add 20 pesos", "+20 cash", "add 500 maya", "received 100") */
+      const isAddMoney = /^(?:add|received|top\s*up|deposit|\+)\s*/i.test(lower);
+      if (isAddMoney) {
+        const numMatch = pesoMatch || lower.match(/(?:add|received|top\s*up|deposit|\+)\s*(\d+)/i);
+        if (numMatch) {
+          const amt = parseInt(numMatch[1], 10);
+          if (amt > 0) {
+            const label = raw.replace(/^(?:add|received|top\s*up|deposit|\+)\s*/i, '').trim() || `Added ₱${amt}`;
+            addEntry({ name: label, type: 'income', cost: amt, wallet });
+            input.value = '';
+            showWrapToast(`💵 +₱${amt.toLocaleString()} Added`, `Added to ${wallet.toUpperCase()}.`);
+            return;
+          }
+        }
+      }
+
       const knownFoodKeywords = ['egg', 'rice', 'chicken', 'tuna', 'sardines', 'banana'];
       const hasKnownFood = knownFoodKeywords.some(kw => lower.includes(kw));
 
+      /* 3. Pure expense */
       if (pesoMatch && !hasKnownFood) {
         const amt = parseInt(pesoMatch[1], 10);
         const label = raw.replace(/(?:₱|php|p)\s*\d+/i, '').replace(/maya|cash/gi, '').trim() || 'Quick Expense';
@@ -2141,6 +2256,7 @@
         return;
       }
 
+      /* 4. Known food keywords */
       let kcal = 0, protein = 0;
       if (lower.includes('egg')) {
         const qty = parseInt((lower.match(/(\d+)\s*egg/) || [0, 1])[1], 10);
@@ -2156,6 +2272,7 @@
 
       const cost = pesoMatch ? parseInt(pesoMatch[1], 10) : 0;
 
+      /* 5. Unlisted food -> open pop-up asking for kcal, protein, price + Scale/Research Later */
       if (!hasKnownFood && kcal === 0) {
         const cleanName = raw.replace(/(?:₱|php|p)\s*\d+/i, '').replace(/\b(maya|cash)\b/gi, '').trim() || raw;
         openUnlistedFoodModal({ name: cleanName, cost, wallet });
@@ -2224,7 +2341,7 @@
 
     function bankLeftover() {
       const dayEntries = state.entries.filter(e => e.date === currentDateStr);
-      const spent = dayEntries.reduce((s, e) => s + (e.cost || 0), 0);
+      const spent = dayEntries.reduce((s, e) => s + (e.type !== 'income' ? (e.cost || 0) : 0), 0);
       const eatenKcal = dayEntries.reduce((s, e) => s + (e.kcal || 0), 0);
       const eatenProt = dayEntries.reduce((s, e) => s + (e.protein || 0), 0);
       const leftover = state.settings.dailyAllowance - spent;
@@ -2295,17 +2412,91 @@
       document.getElementById('tabBackupBtn').classList.toggle('active', tab === 'backup');
     }
 
+    /* Onboarding Unit Toggles & Expanded Goal Calculator */
+    let activeHeightUnit = 'cm';
+    let activeWeightUnit = 'kg';
+
+    function toggleHeightUnit() {
+      const nextUnit = document.getElementById('obHeightUnit').value;
+      if (nextUnit === 'ft') {
+        const cm = parseFloat(document.getElementById('obHeight').value) || 170;
+        const totalIn = cm / 2.54;
+        const ft = Math.floor(totalIn / 12);
+        const inches = Math.round((totalIn - ft * 12) * 2) / 2;
+        document.getElementById('obHeightFt').value = ft;
+        document.getElementById('obHeightIn').value = inches;
+        document.getElementById('obHeightUnitFt').value = 'ft';
+        document.getElementById('obHeightCmWrap').style.display = 'none';
+        document.getElementById('obHeightFtWrap').style.display = 'flex';
+        activeHeightUnit = 'ft';
+      }
+      previewOnboardingCalc();
+    }
+
+    function toggleHeightUnitFromFt() {
+      const nextUnit = document.getElementById('obHeightUnitFt').value;
+      if (nextUnit === 'cm') {
+        const ft = parseFloat(document.getElementById('obHeightFt').value) || 5;
+        const inches = parseFloat(document.getElementById('obHeightIn').value) || 0;
+        const cm = Math.round(((ft * 12) + inches) * 2.54);
+        document.getElementById('obHeight').value = cm;
+        document.getElementById('obHeightUnit').value = 'cm';
+        document.getElementById('obHeightFtWrap').style.display = 'none';
+        document.getElementById('obHeightCmWrap').style.display = 'flex';
+        activeHeightUnit = 'cm';
+      }
+      previewOnboardingCalc();
+    }
+
+    function toggleWeightUnit() {
+      const nextUnit = document.getElementById('obWeightUnit').value;
+      const curVal = parseFloat(document.getElementById('obWeight').value) || 68;
+      if (nextUnit === 'lbs' && activeWeightUnit === 'kg') {
+        document.getElementById('obWeight').value = (curVal * 2.20462).toFixed(1);
+      } else if (nextUnit === 'kg' && activeWeightUnit === 'lbs') {
+        document.getElementById('obWeight').value = (curVal / 2.20462).toFixed(1);
+      }
+      activeWeightUnit = nextUnit;
+      previewOnboardingCalc();
+    }
+
+    function getOnboardingMetricStats() {
+      const sex = document.getElementById('obSex').value;
+      const age = Number(document.getElementById('obAge').value) || 20;
+      let heightCm = 170;
+      if (activeHeightUnit === 'ft') {
+        const ft = parseFloat(document.getElementById('obHeightFt').value) || 5;
+        const inches = parseFloat(document.getElementById('obHeightIn').value) || 0;
+        heightCm = ((ft * 12) + inches) * 2.54;
+      } else {
+        heightCm = parseFloat(document.getElementById('obHeight').value) || 170;
+      }
+      const rawW = parseFloat(document.getElementById('obWeight').value) || 68;
+      const weightKg = activeWeightUnit === 'lbs' ? (rawW / 2.20462) : rawW;
+      const goalType = document.getElementById('obGoal').value;
+      return { sex, age, heightCm, weightKg, goalType };
+    }
+
     function computeTargetsFromStats(sex, age, heightCm, weightKg, goalType) {
       const bmr = (10 * weightKg) + (6.25 * heightCm) - (5 * age) + (sex === 'male' ? 5 : -161);
       const tdee = bmr * 1.375;
       let kcal = Math.round(tdee);
       let proteinMult = 1.9;
 
-      if (goalType === 'cut') {
-        kcal = Math.max(1350, Math.round((tdee - 420) / 10) * 10);
+      if (goalType === 'aggressive_cut') {
+        kcal = Math.max(1300, Math.round((tdee - 550) / 10) * 10);
+        proteinMult = 2.1;
+      } else if (goalType === 'cut') {
+        kcal = Math.max(1350, Math.round((tdee - 400) / 10) * 10);
         proteinMult = 2.0;
+      } else if (goalType === 'maintain') {
+        kcal = Math.round(tdee / 10) * 10;
+        proteinMult = 1.7;
       } else if (goalType === 'bulk') {
-        kcal = Math.round((tdee + 260) / 10) * 10;
+        kcal = Math.round((tdee + 250) / 10) * 10;
+        proteinMult = 1.8;
+      } else if (goalType === 'aggressive_bulk') {
+        kcal = Math.round((tdee + 450) / 10) * 10;
         proteinMult = 1.8;
       } else {
         kcal = Math.max(1500, Math.round((tdee - 150) / 10) * 10);
@@ -2316,24 +2507,24 @@
     }
 
     function previewOnboardingCalc() {
-      const sex = document.getElementById('obSex').value;
-      const age = Number(document.getElementById('obAge').value) || 20;
-      const heightCm = Number(document.getElementById('obHeight').value) || 170;
-      const weightKg = Number(document.getElementById('obWeight').value) || 68;
-      const goalType = document.getElementById('obGoal').value;
+      const { sex, age, heightCm, weightKg, goalType } = getOnboardingMetricStats();
       const res = computeTargetsFromStats(sex, age, heightCm, weightKg, goalType);
       document.getElementById('obCalcResult').textContent = `${res.kcal.toLocaleString()} kcal • ${res.protein}g P`;
     }
 
     function applyOnboardingSetup() {
-      const sex = document.getElementById('obSex').value;
-      const age = Number(document.getElementById('obAge').value) || 20;
-      const heightCm = Number(document.getElementById('obHeight').value) || 170;
-      const weightKg = Number(document.getElementById('obWeight').value) || 68;
-      const goalType = document.getElementById('obGoal').value;
+      const { sex, age, heightCm, weightKg, goalType } = getOnboardingMetricStats();
       const res = computeTargetsFromStats(sex, age, heightCm, weightKg, goalType);
 
-      state.profile = { sex, age, heightCm, weightKg, goalType };
+      state.profile = {
+        sex,
+        age,
+        heightCm: Number(heightCm.toFixed(1)),
+        heightUnit: activeHeightUnit,
+        weightKg: Number(weightKg.toFixed(1)),
+        weightUnit: activeWeightUnit,
+        goalType
+      };
       state.settings.kcalTarget = res.kcal;
       state.settings.proteinTarget = res.protein;
       state.settings.dailyAllowance = Math.max(0, Number(document.getElementById('obAllowance').value) || 300);
@@ -2356,14 +2547,61 @@
       closeModal('settingsModal');
       document.getElementById('obSex').value = state.profile.sex || 'male';
       document.getElementById('obAge').value = state.profile.age || 20;
-      document.getElementById('obHeight').value = state.profile.heightCm || 170;
-      document.getElementById('obWeight').value = state.profile.weightKg || 68;
+
+      const savedH = state.profile.heightCm || 170;
+      activeHeightUnit = state.profile.heightUnit || 'cm';
+      if (activeHeightUnit === 'ft') {
+        const totalIn = savedH / 2.54;
+        const ft = Math.floor(totalIn / 12);
+        const inches = Math.round((totalIn - ft * 12) * 2) / 2;
+        document.getElementById('obHeightFt').value = ft;
+        document.getElementById('obHeightIn').value = inches;
+        document.getElementById('obHeightUnitFt').value = 'ft';
+        document.getElementById('obHeightCmWrap').style.display = 'none';
+        document.getElementById('obHeightFtWrap').style.display = 'flex';
+      } else {
+        document.getElementById('obHeight').value = Math.round(savedH);
+        document.getElementById('obHeightUnit').value = 'cm';
+        document.getElementById('obHeightFtWrap').style.display = 'none';
+        document.getElementById('obHeightCmWrap').style.display = 'flex';
+      }
+
+      const savedW = state.profile.weightKg || 68;
+      activeWeightUnit = state.profile.weightUnit || 'kg';
+      document.getElementById('obWeightUnit').value = activeWeightUnit;
+      document.getElementById('obWeight').value = activeWeightUnit === 'lbs'
+        ? (savedW * 2.20462).toFixed(1)
+        : savedW;
+
       document.getElementById('obGoal').value = state.profile.goalType || 'recomp';
       document.getElementById('obAllowance').value = state.settings.dailyAllowance;
       document.getElementById('obCash').value = state.wallets.cash;
       document.getElementById('obMaya').value = state.wallets.maya;
       previewOnboardingCalc();
       openModal('onboardingModal');
+    }
+
+    /* Edit Total Money Modal */
+    function openTotalMoneyModal() {
+      document.getElementById('tmCashInput').value = state.wallets.cash;
+      document.getElementById('tmMayaInput').value = state.wallets.maya;
+      document.getElementById('tmJarInput').value = state.wallets.jar;
+      updateTotalMoneyPreview();
+      openModal('totalMoneyModal');
+    }
+    function updateTotalMoneyPreview() {
+      const c = Math.max(0, Number(document.getElementById('tmCashInput').value) || 0);
+      const m = Math.max(0, Number(document.getElementById('tmMayaInput').value) || 0);
+      const j = Math.max(0, Number(document.getElementById('tmJarInput').value) || 0);
+      document.getElementById('tmPreviewTotal').textContent = `₱${(c + m + j).toLocaleString()}`;
+    }
+    function saveTotalMoneyModal() {
+      pushUndoSnapshot('Edit Total Money');
+      state.wallets.cash = Math.max(0, Number(document.getElementById('tmCashInput').value) || 0);
+      state.wallets.maya = Math.max(0, Number(document.getElementById('tmMayaInput').value) || 0);
+      state.wallets.jar = Math.max(0, Number(document.getElementById('tmJarInput').value) || 0);
+      closeModal('totalMoneyModal');
+      saveState();
     }
 
     function openModal(id) {
@@ -2380,12 +2618,13 @@
     function toggleManualFields() {
       const t = document.getElementById('manType').value;
       document.getElementById('foodFields').style.display = (t === 'food' || t === 'combo') ? 'grid' : 'none';
-      document.getElementById('expFields').style.display = (t === 'expense' || t === 'combo') ? 'grid' : 'none';
+      document.getElementById('expFields').style.display = (t === 'expense' || t === 'income' || t === 'combo') ? 'grid' : 'none';
+      document.getElementById('manCostLabel').textContent = t === 'income' ? 'Amount to Add (₱)' : 'Cost (₱)';
     }
 
     function saveManualEntry() {
       const type = document.getElementById('manType').value;
-      const name = document.getElementById('manName').value.trim() || 'Custom Item';
+      const name = document.getElementById('manName').value.trim() || (type === 'income' ? 'Added Funds' : 'Custom Item');
       const kcal = Number(document.getElementById('manKcal').value) || 0;
       const protein = Number(document.getElementById('manProt').value) || 0;
       const cost = Number(document.getElementById('manCost').value) || 0;
@@ -2421,14 +2660,26 @@
       const e = state.entries.find(x => x.id === id);
       if (!e) return;
       pushUndoSnapshot(`Edit ${e.name}`);
-      if (e.cost > 0) state.wallets[e.wallet] += e.cost;
+      if (e.cost > 0) {
+        if (e.type === 'income') {
+          state.wallets[e.wallet] = Math.max(0, (state.wallets[e.wallet] || 0) - e.cost);
+        } else {
+          state.wallets[e.wallet] += e.cost;
+        }
+      }
       e.name = document.getElementById('editName').value.trim() || e.name;
       e.todoTag = document.getElementById('editTodoTag').value;
       e.kcal = Number(document.getElementById('editKcal').value) || 0;
       e.protein = Number(document.getElementById('editProt').value) || 0;
       e.cost = Number(document.getElementById('editCost').value) || 0;
       e.wallet = document.getElementById('editWallet').value;
-      if (e.cost > 0) state.wallets[e.wallet] = Math.max(0, state.wallets[e.wallet] - e.cost);
+      if (e.cost > 0) {
+        if (e.type === 'income') {
+          state.wallets[e.wallet] += e.cost;
+        } else {
+          state.wallets[e.wallet] = Math.max(0, state.wallets[e.wallet] - e.cost);
+        }
+      }
       saveState();
       closeModal('editModal');
     }
